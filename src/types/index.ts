@@ -1,0 +1,86 @@
+export type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+
+export type DanceStyle =
+  | 'Bollywood'
+  | 'Afro Fusion'
+  | 'K-Pop'
+  | 'Urban Hip-Hop'
+  | 'Commercial Pop'
+  | 'South Fusion'
+  | 'Latin / Salsa'
+  | 'Funk & Popping'
+  | 'Contemporary';
+
+export interface DanceStep {
+  id: string;
+  stepNumber: number;
+  title: string;
+  subtitle: string;
+  timestampStart: number; // in seconds
+  timestampEnd: number; // in seconds
+  countNotation: string; // e.g. "1 - 2 - 3 & 4 | Step right, dip left"
+  instructorTip: string;
+  focalArea: 'Footwork' | 'Upper Body' | 'Weight Shift' | 'Groove' | 'Full Combo' | 'Performance';
+  tempoGuide: 'Half Tempo (0.5x)' | 'Practice Tempo (0.75x)' | 'Original BPM (1.0x)';
+  keyCounts: string[];
+}
+
+export interface DanceRoutine {
+  id: string;
+  slug: string;
+  title: string; // Song Title
+  artist: string; // Original Song Artist
+  creator: string; // Dance Instructor / Choreographer
+  creatorHandle: string;
+  creatorAvatar: string;
+  creatorBio: string;
+  creatorChannelUrl?: string;
+  coverImage: string;
+  videoUrl: string;
+  previewVideoUrl?: string;
+  difficulty: Difficulty;
+  style: DanceStyle;
+  bpm: number;
+  durationMinutes: string; // e.g. "14 min breakdown"
+  viewCount: number;
+  learnersCount: number;
+  description: string;
+  keyTechnique: string;
+  learningCheckpoints: string[];
+  steps: DanceStep[];
+  isTrending?: boolean;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  isBeginnerPick?: boolean;
+}
+
+export interface DanceCategory {
+  id: string;
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  coverImage: string;
+  routineCount: number;
+  sampleSongs: string[];
+}
+
+export interface Instructor {
+  id: string;
+  name: string;
+  handle: string;
+  avatar: string;
+  specialty: string;
+  bio: string;
+  location: string;
+  routinesCount: number;
+  studentsTaught: number;
+  featuredRoutineId: string;
+}
+
+export interface SearchFilterState {
+  query: string;
+  style: string;
+  difficulty: string;
+  sortBy: 'popular' | 'newest' | 'duration' | 'bpm';
+}

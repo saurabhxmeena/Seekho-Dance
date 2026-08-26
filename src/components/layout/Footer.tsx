@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function Footer() {
   return (
@@ -20,6 +21,10 @@ export function Footer() {
             <p className="text-neutral-500 dark:text-neutral-400 text-xs leading-relaxed">
               Designed for dancers and fans who discover choreography on YouTube and want to learn the exact steps at their own pace.
             </p>
+            <div className="pt-2 flex items-center gap-2">
+              <ThemeToggle className="border border-neutral-200 dark:border-neutral-800" />
+              <span className="text-[11px] text-neutral-400">Toggle dark / light mode</span>
+            </div>
           </div>
 
           {/* Col 2: Dance Styles */}
@@ -80,6 +85,11 @@ export function Footer() {
               <li>
                 <Link href="/styles" className="hover:text-neutral-900 dark:hover:text-white transition">
                   Style Taxonomy
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="hover:text-neutral-900 dark:hover:text-white transition">
+                  Pricing Plans
                 </Link>
               </li>
             </ul>

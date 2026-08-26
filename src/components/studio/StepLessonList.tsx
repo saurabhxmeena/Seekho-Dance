@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, Circle, Play, Flame, Sparkles, Footprints, Dumbbell, Compass, HelpCircle, Repeat } from "lucide-react";
+import { CheckCircle2, Circle, Footprints, Dumbbell, Compass, Repeat } from "lucide-react";
 import { DanceStep, DanceRoutine } from "@/types";
 import { formatTime, cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/Badge";
 
 interface StepLessonListProps {
   routine: DanceRoutine;
@@ -36,12 +35,12 @@ export function StepLessonList({
       case "Weight Shift":
         return Compass;
       default:
-        return Sparkles;
+        return Compass;
     }
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl overflow-hidden">
+    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-xs">
       {/* Header & Overall Progress */}
       <div className="p-4 sm:p-5 border-b border-neutral-200 dark:border-neutral-800 space-y-3">
         <div className="flex items-center justify-between">
@@ -67,7 +66,7 @@ export function StepLessonList({
         {/* Progress Bar */}
         <div className="w-full h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-orange-500 rounded-full transition-all duration-300"
+            className="h-full bg-orange-600 rounded-full transition-all duration-300"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -86,7 +85,7 @@ export function StepLessonList({
               className={cn(
                 "p-4 transition-all duration-150",
                 isActive
-                  ? "bg-orange-50/50 dark:bg-orange-950/20 border-l-4 border-l-orange-500 pl-3.5"
+                  ? "bg-orange-50/50 dark:bg-orange-950/20 border-l-4 border-l-orange-600 pl-3.5"
                   : "hover:bg-neutral-50/60 dark:hover:bg-neutral-800/40"
               )}
             >

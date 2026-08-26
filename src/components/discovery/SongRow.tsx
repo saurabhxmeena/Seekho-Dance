@@ -1,9 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { Play, Sparkles, Disc3, ArrowRight, User } from "lucide-react";
+import { Play, ArrowRight } from "lucide-react";
 import { DanceRoutine } from "@/types";
 import { Badge } from "@/components/ui/Badge";
-import { formatNumber } from "@/lib/utils";
 
 interface SongRowProps {
   routine: DanceRoutine;
@@ -58,7 +57,7 @@ export function SongRow({ routine, index }: SongRowProps) {
           />
           <span className="truncate">{routine.creator}</span>
         </div>
-        <span className="w-20 text-neutral-400">{routine.style}</span>
+        <span className="w-24 text-neutral-400 truncate">{routine.style}</span>
         <span className="font-mono text-[11px] text-neutral-400">{routine.bpm} BPM</span>
       </div>
 

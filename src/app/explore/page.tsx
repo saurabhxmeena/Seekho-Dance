@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { LayoutGrid, List, Music, Sparkles, Filter } from "lucide-react";
+import { LayoutGrid, List, Music } from "lucide-react";
 import { DANCE_ROUTINES } from "@/data/dances";
 import { DanceCard } from "@/components/discovery/DanceCard";
 import { SongRow } from "@/components/discovery/SongRow";
@@ -19,7 +19,7 @@ function ExploreContent() {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedStyle, setSelectedStyle] = useState(initialStyle);
   const [selectedDifficulty, setSelectedDifficulty] = useState(initialDiff);
-  const [sortBy, setSortBy] = useState<"popular" | "newest" | "duration" | "bpm">("popular");
+  const [sortBy, setSortBy] = useState<"featured" | "newest" | "bpm">("featured");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Keep state synced with URL params when navigating

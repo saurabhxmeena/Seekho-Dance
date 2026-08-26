@@ -12,23 +12,13 @@ export function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export function formatNumber(num: number): string {
-  if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
-  }
-  if (num >= 1_000) {
-    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-  }
-  return num.toString();
-}
-
 export function filterDances(
   dances: DanceRoutine[],
   options: {
     query?: string;
     style?: string;
     difficulty?: string;
-    sortBy?: 'popular' | 'newest' | 'duration' | 'bpm';
+    sortBy?: 'featured' | 'newest' | 'bpm';
   }
 ): DanceRoutine[] {
   return dances.filter((dance) => {
@@ -45,7 +35,7 @@ export function filterDances(
     }
 
     if (options.style && options.style !== 'All') {
-      if (dance.style.toLowerCase() !== options.style.toLowerCase()) {
+      if (!dance.style.toLowerCase().includes(options.style.toLowerCase())) {
         return false;
       }
     }
@@ -58,8 +48,10 @@ export function filterDances(
 
     return true;
   }).sort((a, b) => {
-    if (options.sortBy === 'popular') {
-      return b.learnersCount - a.learnersCount;
+    if (options.sortBy === 'featured') {
+      const scoreA = (a.isFeatured ? 2 : 0) + (a.isTrending ? 1 : 0);
+      const scoreB = (b.isFeatured ? 2 : 0) + (b.isTrending ? 1 : 0);
+      return scoreB - scoreA;
     }
     if (options.sortBy === 'newest') {
       return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);

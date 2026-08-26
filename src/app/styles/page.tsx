@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Music, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { DANCE_CATEGORIES } from "@/data/categories";
 import { DANCE_ROUTINES } from "@/data/dances";
 
@@ -51,7 +51,7 @@ export default function StylesPage() {
                   <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs">
                     <span className="font-semibold text-sm">{category.name}</span>
                     <span className="font-mono text-[11px] bg-white/20 backdrop-blur-xs px-2 py-0.5 rounded-md">
-                      {category.routineCount} routines
+                      {routinesInStyle.length} {routinesInStyle.length === 1 ? "routine" : "routines"}
                     </span>
                   </div>
                 </div>

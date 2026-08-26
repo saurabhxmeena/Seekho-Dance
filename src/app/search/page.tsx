@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X, Music, Flame, Sparkles, Filter, ArrowRight } from "lucide-react";
+import { Search, X, Music } from "lucide-react";
 import { DANCE_ROUTINES } from "@/data/dances";
 import { DanceCard } from "@/components/discovery/DanceCard";
-import { SongRow } from "@/components/discovery/SongRow";
 import { filterDances } from "@/lib/utils";
 
 function SearchContent() {
@@ -30,7 +29,7 @@ function SearchContent() {
   const results = filterDances(DANCE_ROUTINES, {
     query: query,
     difficulty: selectedDifficulty,
-    sortBy: "popular",
+    sortBy: "featured",
   });
 
   return (

@@ -42,8 +42,6 @@ export interface DanceRoutine {
   style: DanceStyle;
   bpm: number;
   durationMinutes: string; // e.g. "14 min breakdown"
-  viewCount: number;
-  learnersCount: number;
   description: string;
   keyTechnique: string;
   learningCheckpoints: string[];
@@ -61,7 +59,6 @@ export interface DanceCategory {
   tagline: string;
   description: string;
   coverImage: string;
-  routineCount: number;
   sampleSongs: string[];
 }
 
@@ -73,8 +70,6 @@ export interface Instructor {
   specialty: string;
   bio: string;
   location: string;
-  routinesCount: number;
-  studentsTaught: number;
   featuredRoutineId: string;
 }
 
@@ -82,5 +77,5 @@ export interface SearchFilterState {
   query: string;
   style: string;
   difficulty: string;
-  sortBy: 'popular' | 'newest' | 'duration' | 'bpm';
+  sortBy: 'featured' | 'newest' | 'bpm';
 }

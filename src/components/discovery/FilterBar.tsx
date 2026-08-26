@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, SlidersHorizontal, ArrowUpDown, X } from "lucide-react";
+import { Search, ArrowUpDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FilterBarProps {
@@ -11,8 +11,8 @@ interface FilterBarProps {
   onStyleChange: (style: string) => void;
   selectedDifficulty: string;
   onDifficultyChange: (diff: string) => void;
-  sortBy: "popular" | "newest" | "duration" | "bpm";
-  onSortChange: (sort: "popular" | "newest" | "duration" | "bpm") => void;
+  sortBy: "featured" | "newest" | "bpm";
+  onSortChange: (sort: "featured" | "newest" | "bpm") => void;
   totalResults: number;
 }
 
@@ -22,9 +22,8 @@ const STYLES = [
   "Afro Fusion",
   "K-Pop",
   "Urban Hip-Hop",
-  "Commercial Pop",
   "South Fusion",
-  "Funk & Popping",
+  "Contemporary",
 ];
 
 const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced"];
@@ -95,10 +94,10 @@ export function FilterBar({
           <div className="relative shrink-0">
             <select
               value={sortBy}
-              onChange={(e) => onSortChange(e.target.value as any)}
+              onChange={(e) => onSortChange(e.target.value as "featured" | "newest" | "bpm")}
               className="appearance-none bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl px-3.5 py-2 pr-8 text-xs font-medium text-neutral-700 dark:text-neutral-300 outline-none cursor-pointer hover:border-neutral-400 transition"
             >
-              <option value="popular">Most Popular</option>
+              <option value="featured">Featured First</option>
               <option value="newest">Newest First</option>
               <option value="bpm">Tempo (BPM)</option>
             </select>

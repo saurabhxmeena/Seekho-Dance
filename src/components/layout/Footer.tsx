@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { Sparkles, ArrowUpRight } from "lucide-react";
 
 export function Footer() {
   return (
@@ -110,9 +109,9 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-neutral-200 dark:border-neutral-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-400">
-          <p>© {new Date().getFullYear()} Seekho Dance. Made for dancers, by dancers.</p>
+          <p>© {new Date().getFullYear()} Seekho Dance. Find the dance. Learn the dance.</p>
           <div className="flex items-center gap-4">
-            <span>Mirror Mode • Speed Control • Step Loops</span>
+            <span>Mirror Mode • Speed Control • 8-Count Loops</span>
           </div>
         </div>
       </div>

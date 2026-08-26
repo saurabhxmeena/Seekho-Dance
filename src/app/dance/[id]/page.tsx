@@ -6,17 +6,11 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   Share2,
-  Bookmark,
   CheckCircle,
-  HelpCircle,
   ExternalLink,
-  Music2,
-  Sparkles,
-  Flame,
-  Volume2,
 } from "lucide-react";
 import { DANCE_ROUTINES } from "@/data/dances";
-import { DanceRoutine, DanceStep } from "@/types";
+import { DanceStep } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { StudioPlayer } from "@/components/studio/StudioPlayer";
 import { StepLessonList } from "@/components/studio/StepLessonList";
@@ -75,9 +69,11 @@ export default function DanceLearningPage({ params }: DancePageProps) {
   };
 
   const handleShare = () => {
-    navigator.clipboard?.writeText(window.location.href);
-    setCopiedToast(true);
-    setTimeout(() => setCopiedToast(false), 2500);
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setCopiedToast(true);
+      setTimeout(() => setCopiedToast(false), 2500);
+    }
   };
 
   const relatedDances = DANCE_ROUTINES.filter(
@@ -88,7 +84,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 transition-colors">
       
       {/* Studio Header Bar */}
-      <div className="border-b border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md sticky top-16 z-30">
+      <div className="border-b border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           
           {/* Back link & Song title */}
@@ -121,7 +117,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
           <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
             <button
               onClick={handleShare}
-              className="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 text-xs font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1.5 transition bg-white dark:bg-neutral-900"
+              className="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 text-xs font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1.5 transition bg-white dark:bg-neutral-900 shadow-2xs"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>{copiedToast ? "Link Copied!" : "Share"}</span>
@@ -178,7 +174,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
             {/* 4. Routine Description & Instructor Background */}
             <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-4">
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-1">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
                   About this Routine
                 </h3>
                 <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
@@ -187,7 +183,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
               </div>
 
               {/* Key Technique Callout */}
-              <div className="p-3.5 rounded-xl bg-orange-50/60 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-900/40 text-xs text-orange-950 dark:text-orange-200">
+              <div className="p-3.5 rounded-xl bg-orange-50/70 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-900/40 text-xs text-orange-950 dark:text-orange-200">
                 <span className="font-semibold block mb-0.5">Key Technique to Focus On:</span>
                 {routine.keyTechnique}
               </div>
@@ -237,7 +233,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
             />
 
             {/* Learning Checkpoints Card */}
-            <div className="p-5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-3">
+            <div className="p-5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-3 shadow-xs">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-600" />
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
@@ -247,7 +243,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
               <ul className="space-y-2 text-xs text-neutral-600 dark:text-neutral-400">
                 {routine.learningCheckpoints.map((cp, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-orange-500 font-bold shrink-0">•</span>
+                    <span className="text-orange-600 font-bold shrink-0">•</span>
                     <span>{cp}</span>
                   </li>
                 ))}

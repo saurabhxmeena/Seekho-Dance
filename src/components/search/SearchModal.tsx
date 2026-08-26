@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, X, Music, Flame, Sparkles, ArrowRight, Play } from "lucide-react";
+import { Search, X, Music, Flame, ArrowRight, Play } from "lucide-react";
 import { DANCE_ROUTINES } from "@/data/dances";
 import { DanceRoutine } from "@/types";
 import { Badge } from "@/components/ui/Badge";
@@ -38,8 +37,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         e.preventDefault();
         if (isOpen) {
           onClose();
-        } else {
-          // Open handled by caller or state
         }
       }
       if (e.key === "Escape" && isOpen) {
@@ -83,7 +80,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-sm transition-opacity">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-xs transition-opacity">
       <div 
         className="w-full max-w-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
@@ -108,7 +105,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-medium text-neutral-400 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded">
+            <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-medium text-neutral-400 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded">
               ESC
             </kbd>
           )}
@@ -121,7 +118,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {/* Popular Searches */}
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2.5 px-2">
-                  <Flame className="w-3.5 h-3.5 text-orange-500" />
+                  <Flame className="w-3.5 h-3.5 text-orange-600" />
                   Trending Searches
                 </div>
                 <div className="flex flex-wrap gap-2 px-2">
@@ -139,18 +136,17 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
               {/* Browse Quick Categories */}
               <div className="pt-2">
-                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2.5 px-2">
-                  <Sparkles className="w-3.5 h-3.5 text-neutral-500" />
-                  Popular Dance Styles
+                <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2.5 px-2">
+                  Dance Styles
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-2">
                   {[
                     { name: "Bollywood", query: "Bollywood" },
                     { name: "Afro Fusion", query: "Afro" },
-                    { name: "K-Pop Choreo", query: "K-Pop" },
+                    { name: "K-Pop", query: "K-Pop" },
                     { name: "Urban Hip-Hop", query: "Hip-Hop" },
-                    { name: "Commercial Pop", query: "Commercial" },
                     { name: "South Fusion", query: "South Fusion" },
+                    { name: "Contemporary", query: "Contemporary" },
                   ].map((cat) => (
                     <button
                       key={cat.name}
@@ -178,7 +174,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   onClick={() => handleSelectRoutine(routine.id)}
                   className="w-full flex items-center gap-3.5 p-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors text-left group"
                 >
-                  <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-neutral-200 flex-shrink-0">
+                  <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-neutral-200 shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={routine.coverImage}
@@ -234,9 +230,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
         {/* Footer info */}
         <div className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900/80 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between text-[11px] text-neutral-400">
-          <span className="flex items-center gap-1.5">
-            <span>Tip: Learn dances from viral YouTube songs step-by-step</span>
-          </span>
+          <span>Tip: Learn dances from viral YouTube songs step-by-step</span>
           <button
             onClick={onClose}
             className="hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"

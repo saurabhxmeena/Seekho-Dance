@@ -12,10 +12,6 @@ import {
   Volume2,
   VolumeX,
   Gauge,
-  SkipBack,
-  SkipForward,
-  Sparkles,
-  Info,
   Tv,
 } from "lucide-react";
 import { DanceRoutine, DanceStep } from "@/types";
@@ -53,11 +49,8 @@ export function StudioPlayer({
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(1);
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isTheater, setIsTheater] = useState<boolean>(false);
   const [showControls, setShowControls] = useState<boolean>(true);
-  const [isHoveringTimeline, setIsHoveringTimeline] = useState<boolean>(false);
 
   // Sync speed changes to video
   useEffect(() => {
@@ -131,9 +124,9 @@ export function StudioPlayer({
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen?.().then(() => setIsFullscreen(true));
+      containerRef.current.requestFullscreen?.();
     } else {
-      document.exitFullscreen?.().then(() => setIsFullscreen(false));
+      document.exitFullscreen?.();
     }
   };
 
@@ -156,7 +149,7 @@ export function StudioPlayer({
         }
       } else if (e.key === "ArrowRight") {
         if (videoRef.current) {
-          videoRef.current.currentTime = Math.min(duration, videoRef.current.currentTime + 5);
+          videoRef.current.currentTime = Math.min(duration || 105, videoRef.current.currentTime + 5);
         }
       }
     };
@@ -396,7 +389,7 @@ export function StudioPlayer({
               className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition"
               aria-label="Fullscreen"
             >
-              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              <Maximize2 className="w-4 h-4" />
             </button>
           </div>
         </div>

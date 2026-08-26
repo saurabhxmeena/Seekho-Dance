@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Play, Volume2, Music2 } from "lucide-react";
+import { Music2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CountSheetProps {
@@ -29,11 +29,11 @@ export function CountSheet({ bpm, isPlaying, countNotation, keyCounts }: CountSh
   }, [isPlaying, bpm]);
 
   return (
-    <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 space-y-3.5">
+    <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 space-y-3.5 shadow-xs">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Music2 className="w-4 h-4 text-orange-500" />
+          <Music2 className="w-4 h-4 text-orange-600" />
           <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
             8-Count Breakdown
           </h4>
@@ -54,7 +54,7 @@ export function CountSheet({ bpm, isPlaying, countNotation, keyCounts }: CountSh
               className={cn(
                 "h-10 sm:h-12 rounded-lg flex flex-col items-center justify-center transition-all duration-100 font-mono",
                 isCurrent
-                  ? "bg-orange-500 text-white font-bold scale-105 shadow-md shadow-orange-500/20"
+                  ? "bg-orange-600 text-white font-bold scale-105 shadow-md shadow-orange-600/30"
                   : isDownbeat
                   ? "bg-neutral-200/80 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 font-semibold"
                   : "bg-neutral-100 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400"

@@ -7,21 +7,13 @@ import {
   Search,
   Play,
   Flame,
-  Sparkles,
   ArrowRight,
-  Clock,
-  Compass,
-  Layers,
-  ChevronRight,
-  TrendingUp,
-  CheckCircle,
 } from "lucide-react";
 import { DANCE_ROUTINES } from "@/data/dances";
 import { DANCE_CATEGORIES } from "@/data/categories";
 import { DanceCard } from "@/components/discovery/DanceCard";
 import { SongRow } from "@/components/discovery/SongRow";
 import { Badge } from "@/components/ui/Badge";
-import { formatNumber } from "@/lib/utils";
 
 export default function HomePage() {
   const router = useRouter();
@@ -50,7 +42,7 @@ export default function HomePage() {
           
           {/* Eyebrow Label */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
             <span>The choreography behind the songs you love</span>
           </div>
 
@@ -113,7 +105,7 @@ export default function HomePage() {
             <div className="lg:col-span-5 p-6 sm:p-10 lg:p-12 space-y-6 z-10">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-600 text-white shadow-xs">
+                  <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-600 text-white shadow-xs">
                     Featured Tutorial
                   </span>
                   <Badge difficulty={featuredRoutine.difficulty} variant="difficulty" className="bg-neutral-800 text-neutral-200 border-neutral-700" />
@@ -195,12 +187,12 @@ export default function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-20">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1">
+            <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1">
               <Flame className="w-4 h-4" />
-              <span>Trending Right Now</span>
+              <span>Trending Choreographies</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white">
-              Most Practiced Choreographies
+              Most Practiced Routines
             </h2>
           </div>
 
@@ -208,7 +200,7 @@ export default function HomePage() {
             href="/explore"
             className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white transition"
           >
-            Explore all {DANCE_ROUTINES.length} dances <ArrowRight className="w-3.5 h-3.5" />
+            Explore all dances <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -284,9 +276,6 @@ export default function HomePage() {
 
               {/* Content */}
               <div className="relative z-10 space-y-1.5">
-                <span className="text-[11px] font-mono font-medium text-orange-400">
-                  {category.routineCount} Tutorials
-                </span>
                 <h3 className="text-xl font-bold text-white tracking-tight">
                   {category.name}
                 </h3>
@@ -302,7 +291,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. BEGINNER-FRIENDLY ZERO-TO-ONE SECTION */}
+      {/* 6. BEGINNER-FRIENDLY SECTION */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-20">
         <div className="p-8 sm:p-12 rounded-3xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
           <div className="max-w-2xl mb-8 space-y-2">
@@ -325,7 +314,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. THE SEEKHO LOOP (MINIMAL HOW IT WORKS) */}
+      {/* 7. THE SEEKHO LOOP (HOW IT WORKS) */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-24">
         <div className="text-center max-w-xl mx-auto mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white">

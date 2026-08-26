@@ -9,8 +9,6 @@ export const INSTRUCTORS: Instructor[] = [
     specialty: "Bollywood Commercial & Street Hooks",
     bio: "National Award-winning choreographer behind iconic Bollywood hooks including Tauba Tauba and Ghungroo. Focuses on effortless swagger and crisp weight changes.",
     location: "Mumbai, India",
-    routinesCount: 18,
-    studentsTaught: 320000,
     featuredRoutineId: "tauba-tauba"
   },
   {
@@ -21,8 +19,6 @@ export const INSTRUCTORS: Instructor[] = [
     specialty: "Afro Fusion, Amapiano & Bacardi",
     bio: "Johannesburg-based movement director and pioneer of viral modern African dance styles. Known for breaking down waist isolation and ground groove.",
     location: "Johannesburg / London",
-    routinesCount: 14,
-    studentsTaught: 240000,
     featuredRoutineId: "water"
   },
   {
@@ -33,8 +29,6 @@ export const INSTRUCTORS: Instructor[] = [
     specialty: "Urban Contemporary & K-Pop",
     bio: "World-renowned choreographer for BTS, Jung Kook, and Justin Bieber. Master of micro-textures, smooth slides, and lyrical musicality.",
     location: "Los Angeles, CA",
-    routinesCount: 22,
-    studentsTaught: 480000,
     featuredRoutineId: "seven"
   },
   {
@@ -45,8 +39,6 @@ export const INSTRUCTORS: Instructor[] = [
     specialty: "Semi-Classical & Bollywood Fusion",
     bio: "India's favorite online dance studio founders. Perfect for complete beginners looking to build grace, footwork clarity, and musical confidence.",
     location: "Mumbai, India",
-    routinesCount: 31,
-    studentsTaught: 620000,
     featuredRoutineId: "chaleya"
   },
   {
@@ -57,8 +49,6 @@ export const INSTRUCTORS: Instructor[] = [
     specialty: "Commercial Pop & High-Energy Jazz",
     bio: "Choreographer for Tate McRae, Lil Nas X, and Normani. Teaches explosive dynamics, fast hip snaps, and stage presence.",
     location: "Atlanta, GA",
-    routinesCount: 12,
-    studentsTaught: 195000,
     featuredRoutineId: "greedy"
   }
 ];

@@ -176,7 +176,7 @@ export function StudioPlayer({
         src={routine.videoUrl}
         poster={routine.coverImage}
         className={cn(
-          "w-full h-full object-cover transition-transform duration-300",
+          "w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] gpu-layer",
           isMirrored ? "-scale-x-100" : "scale-x-100"
         )}
         onTimeUpdate={handleTimeUpdate}
@@ -197,19 +197,19 @@ export function StudioPlayer({
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
         <div className="flex items-center gap-2">
           {isMirrored && (
-            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-orange-600 text-white flex items-center gap-1.5 shadow-md animate-pulse">
+            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-orange-600 text-white flex items-center gap-1.5 shadow-md animate-scale-in">
               <FlipHorizontal className="w-3.5 h-3.5" />
               MIRROR ON
             </span>
           )}
           {isLooping && (
-            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white flex items-center gap-1.5 shadow-md">
+            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white flex items-center gap-1.5 shadow-md animate-scale-in">
               <Repeat className="w-3.5 h-3.5" />
               LOOP STEP {activeStep.stepNumber}
             </span>
           )}
           {playbackSpeed !== 1.0 && (
-            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-neutral-900/90 text-neutral-200 border border-neutral-700 backdrop-blur-xs flex items-center gap-1">
+            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-neutral-900/90 text-neutral-200 border border-neutral-700 backdrop-blur-xs flex items-center gap-1 animate-scale-in">
               <Gauge className="w-3 h-3 text-orange-400" />
               {playbackSpeed}x SPEED
             </span>
@@ -219,7 +219,7 @@ export function StudioPlayer({
         <div className="flex items-center gap-2 pointer-events-auto">
           <button
             onClick={() => setIsTheater(!isTheater)}
-            className="hidden sm:flex p-2 rounded-lg bg-black/60 hover:bg-black/80 text-white backdrop-blur-xs border border-white/10 transition"
+            className="hidden sm:flex p-2 rounded-lg bg-black/60 hover:bg-black/80 text-white backdrop-blur-xs border border-white/10 transition active:scale-95"
             title="Toggle Theater Mode"
           >
             <Tv className="w-4 h-4" />
@@ -231,10 +231,10 @@ export function StudioPlayer({
       {!isPlaying && (
         <div
           onClick={togglePlay}
-          className="absolute inset-0 bg-black/30 flex items-center justify-center cursor-pointer z-10"
+          className="absolute inset-0 bg-black/35 backdrop-blur-[2px] flex items-center justify-center cursor-pointer z-10 transition-all duration-300"
         >
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/90 text-neutral-950 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform">
-            <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-1" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 text-neutral-950 flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]">
+            <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-1 text-orange-600" />
           </div>
         </div>
       )}

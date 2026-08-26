@@ -81,7 +81,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
   ).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 transition-colors">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 transition-colors">
       
       {/* Studio Header Bar */}
       <div className="border-b border-neutral-200/60 dark:border-neutral-800/60 bg-white/75 dark:bg-neutral-900/75 backdrop-blur-md sticky top-16 z-30 transition-colors">

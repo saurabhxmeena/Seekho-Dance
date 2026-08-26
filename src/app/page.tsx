@@ -12,7 +12,6 @@ import {
 import { DANCE_ROUTINES } from "@/data/dances";
 import { DANCE_CATEGORIES } from "@/data/categories";
 import { DanceCard } from "@/components/discovery/DanceCard";
-import { SongRow } from "@/components/discovery/SongRow";
 import { Badge } from "@/components/ui/Badge";
 import { PricingSection } from "@/components/pricing/PricingSection";
 
@@ -22,13 +21,12 @@ export default function HomePage() {
 
   const featuredRoutine = DANCE_ROUTINES.find((d) => d.isFeatured) || DANCE_ROUTINES[0];
   const trendingRoutines = DANCE_ROUTINES.filter((d) => d.isTrending).slice(0, 4);
-  const popularSongs = DANCE_ROUTINES.slice(0, 6);
   const beginnerPicks = DANCE_ROUTINES.filter((d) => d.isBeginnerPick || d.difficulty === "Beginner").slice(0, 4);
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (heroSearch.trim()) {
-      router.push(`/search?q=${encodeURIComponent(heroSearch.trim())}`);
+      router.push(`/explore?q=${encodeURIComponent(heroSearch.trim())}`);
     } else {
       router.push("/explore");
     }
@@ -38,11 +36,11 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 transition-colors duration-200">
       
       {/* 1. HERO SECTION */}
-      <section className="relative pt-8 sm:pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="max-w-3xl space-y-5 sm:space-y-6">
+      <section className="relative pt-6 sm:pt-20 pb-10 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="max-w-3xl space-y-4 sm:space-y-6">
           
           {/* Eyebrow Label */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 shadow-2xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
             <span>The choreography behind the songs you love</span>
           </div>
@@ -62,48 +60,52 @@ export default function HomePage() {
 
           {/* Hero Search Bar */}
           <form onSubmit={handleHeroSearch} className="relative max-w-xl pt-1 sm:pt-2">
-            <div className="relative flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-2xl shadow-sm focus-within:border-neutral-950 dark:focus-within:border-neutral-400 focus-within:shadow-md transition-all p-1.5">
-              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 ml-2.5 sm:ml-3 flex-shrink-0" />
+            <div className="relative flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-2xl shadow-sm focus-within:border-neutral-950 dark:focus-within:border-neutral-400 focus-within:shadow-md transition-all px-4 py-3 sm:py-3.5">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 mr-2.5 flex-shrink-0" />
               <input
                 type="text"
                 value={heroSearch}
                 onChange={(e) => setHeroSearch(e.target.value)}
-                placeholder="Search by song (Tauba Tauba, Water, Seven)..."
-                className="w-full px-2.5 sm:px-3 py-2 text-xs sm:text-sm bg-transparent text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 outline-none"
+                placeholder="Search any song, artist, or style..."
+                className="w-full text-base sm:text-sm bg-transparent text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 outline-none"
               />
-              <button
-                type="submit"
-                className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-xs font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 transition shrink-0 shadow-xs active:scale-95"
-              >
-                Find Dance
-              </button>
             </div>
 
-            {/* Quick Suggestions */}
-            <div className="flex items-center gap-1.5 sm:gap-2 mt-3 text-xs text-neutral-500 overflow-x-auto pb-1 scrollbar-none">
-              <span className="font-medium shrink-0 text-[11px]">Popular:</span>
-              {["Tauba Tauba", "Water Tyla", "Jung Kook Seven", "Illuminati", "Chaleya"].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => router.push(`/search?q=${encodeURIComponent(item)}`)}
-                  className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 text-[11px] whitespace-nowrap transition active:scale-95 border border-neutral-200/60 dark:border-neutral-800"
-                >
-                  {item}
-                </button>
-              ))}
+            {/* Trending Quick Links (Smooth horizontal scroll on mobile) */}
+            <div className="flex items-center gap-2 mt-3 text-xs text-neutral-500 overflow-x-auto scrollbar-none whitespace-nowrap pb-1">
+              <span className="font-semibold text-neutral-500 dark:text-neutral-400 text-xs shrink-0">Trending:</span>
+              <Link
+                href="/dance/tauba-tauba"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition shrink-0"
+              >
+                Tauba Tauba
+              </Link>
+              <span className="text-neutral-300 dark:text-neutral-700">•</span>
+              <Link
+                href="/dance/water"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition shrink-0"
+              >
+                Water
+              </Link>
+              <span className="text-neutral-300 dark:text-neutral-700">•</span>
+              <Link
+                href="/dance/seven"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition shrink-0"
+              >
+                Seven
+              </Link>
             </div>
           </form>
         </div>
       </section>
 
       {/* 2. SPOTLIGHT ROUTINE HERO CARD */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 sm:pb-20">
-        <div className="relative rounded-3xl overflow-hidden bg-neutral-900 text-white border border-neutral-800 shadow-2xl">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-14 sm:pb-20">
+        <div className="relative rounded-[28px] sm:rounded-3xl overflow-hidden bg-neutral-900 text-white border border-neutral-800 shadow-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-center">
             
             {/* Left Info Column */}
-            <div className="lg:col-span-5 p-6 sm:p-10 lg:p-12 space-y-5 sm:space-y-6 z-10">
+            <div className="lg:col-span-5 p-6 sm:p-10 lg:p-12 space-y-5 z-10">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-600 text-white shadow-xs">
@@ -130,7 +132,7 @@ export default function HomePage() {
                 <img
                   src={featuredRoutine.creatorAvatar}
                   alt={featuredRoutine.creator}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-orange-500/40"
+                  className="w-10 h-10 rounded-full object-cover ring-2 ring-orange-500/40 shrink-0"
                 />
                 <div>
                   <div className="text-xs font-semibold text-white">
@@ -146,7 +148,7 @@ export default function HomePage() {
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 <Link
                   href={`/dance/${featuredRoutine.id}`}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs transition shadow-lg shadow-orange-600/30 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs transition shadow-lg shadow-orange-600/30 active:scale-95 text-center"
                 >
                   <Play className="w-4 h-4 fill-current" />
                   <span>Start Step 01 (Foundation)</span>
@@ -154,7 +156,7 @@ export default function HomePage() {
 
                 <Link
                   href="/explore"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-medium transition active:scale-95"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-medium transition active:scale-95 text-center"
                 >
                   Browse Library
                 </Link>
@@ -162,7 +164,7 @@ export default function HomePage() {
             </div>
 
             {/* Right Visual Video Image Banner */}
-            <div className="lg:col-span-7 relative h-64 sm:h-96 lg:h-[420px] bg-neutral-950 overflow-hidden">
+            <div className="lg:col-span-7 relative h-56 sm:h-96 lg:h-[420px] bg-neutral-950 overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={featuredRoutine.coverImage}
@@ -185,8 +187,8 @@ export default function HomePage() {
       </section>
 
       {/* 3. TRENDING DANCES SECTION */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 sm:pb-20">
-        <div className="flex items-end justify-between mb-6 sm:mb-8">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-14 sm:pb-20">
+        <div className="flex items-end justify-between mb-5 sm:mb-8">
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1">
               <Flame className="w-4 h-4" />
@@ -199,9 +201,9 @@ export default function HomePage() {
 
           <Link
             href="/explore"
-            className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white transition"
+            className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white inline-flex items-center gap-1 transition"
           >
-            Explore all dances <ArrowRight className="w-3.5 h-3.5" />
+            Explore all <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -212,36 +214,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. BROWSE BY POPULAR SONG */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 sm:pb-20">
-        <div className="flex items-end justify-between mb-6 sm:mb-8">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
-              Track-First Discovery
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white">
-              Popular Songs
-            </h2>
-          </div>
-
-          <Link
-            href="/explore"
-            className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white inline-flex items-center gap-1 transition"
-          >
-            View all songs <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="space-y-2 sm:space-y-2.5">
-          {popularSongs.map((routine, idx) => (
-            <SongRow key={routine.id} routine={routine} index={idx} />
-          ))}
-        </div>
-      </section>
-
-      {/* 5. DANCE STYLES TAXONOMY */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 sm:pb-20">
-        <div className="flex items-end justify-between mb-6 sm:mb-8">
+      {/* 4. DANCE STYLES TAXONOMY */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-14 sm:pb-20">
+        <div className="flex items-end justify-between mb-5 sm:mb-8">
           <div>
             <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
               Curated Styles
@@ -259,12 +234,12 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
           {DANCE_CATEGORIES.map((category) => (
             <Link
               key={category.id}
               href={`/explore?style=${encodeURIComponent(category.name.split(" ")[0])}`}
-              className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex flex-col justify-end p-5 sm:p-6 hover:shadow-lg transition-all"
+              className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex flex-col justify-end p-5 sm:p-6 hover:shadow-lg transition-all active:scale-98"
             >
               {/* Background Image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -293,8 +268,8 @@ export default function HomePage() {
       </section>
 
       {/* 6. BEGINNER-FRIENDLY SECTION */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 sm:pb-20">
-        <div className="p-6 sm:p-12 rounded-3xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-14 sm:pb-20">
+        <div className="p-6 sm:p-12 rounded-[28px] sm:rounded-3xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
           <div className="max-w-2xl mb-6 sm:mb-8 space-y-2">
             <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
               Complete Beginners

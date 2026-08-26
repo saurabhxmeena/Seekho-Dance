@@ -5,6 +5,8 @@
 :root {
   --background: #FAFAF8;
   --foreground: #121212;
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .dark {
@@ -19,25 +21,120 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color 0.3s var(--ease-apple), color 0.3s var(--ease-apple);
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseBeat {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Utility animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.4s var(--ease-apple) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.35s var(--ease-apple) forwards;
+}
+
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-pulse-beat {
+  animation: pulseBeat 0.3s var(--ease-spring);
+}
+
+/* Smooth Interactive Utilities */
+.transition-smooth {
+  transition: all 0.3s var(--ease-apple);
+}
+
+.hover-elevate {
+  transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple), border-color 0.3s var(--ease-apple);
+}
+
+.hover-elevate:hover {
+  transform: translateY(-3px);
+}
+
+.active-press {
+  transition: transform 0.15s var(--ease-apple);
+}
+
+.active-press:active {
+  transform: scale(0.97);
+}
+
+/* Hardware Acceleration Helper */
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 /* Custom range slider styling */
 input[type="range"] {
   accent-color: #ea580c;
+  cursor: pointer;
 }
 
 /* Smooth custom subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -46,9 +143,10 @@ input[type="range"] {
 
 ::-webkit-scrollbar-thumb {
   background: rgba(150, 150, 150, 0.25);
-  border-radius: 4px;
+  border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(150, 150, 150, 0.45);
+  background: rgba(150, 150, 150, 0.5);
 }

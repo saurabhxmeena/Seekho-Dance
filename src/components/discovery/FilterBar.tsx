@@ -60,7 +60,7 @@ export function FilterBar({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search by song, artist, creator or style..."
-            className="w-full pl-10 pr-8 py-2.5 text-sm bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl placeholder-neutral-400 text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-600 transition"
+            className="w-full pl-10 pr-8 py-2.5 text-base sm:text-sm bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl placeholder-neutral-400 text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-600 transition"
           />
           {searchQuery && (
             <button
@@ -73,7 +73,7 @@ export function FilterBar({
         </div>
 
         {/* Sort & Difficulty Selection */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <div className="flex items-center gap-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-1 shrink-0">
             {DIFFICULTIES.map((diff) => (
               <button
@@ -106,8 +106,8 @@ export function FilterBar({
         </div>
       </div>
 
-      {/* Second Row: Style Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      {/* Second Row: Style Chips (Edge-to-edge swipeable on smartphone) */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 shrink-0 mr-1">
           Styles:
         </span>

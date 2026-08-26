@@ -44,13 +44,17 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
         </div>
 
         {/* User Profile Card */}
-        <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/80 border border-neutral-200/70 dark:border-neutral-800">
-          <div className="w-12 h-12 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
+        <Link
+          href="/profile"
+          onClick={onClose}
+          className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/80 border border-neutral-200/70 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 transition group"
+        >
+          <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-400 text-white flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-105 transition-transform">
             SD
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm text-neutral-950 dark:text-white truncate">
+              <span className="font-semibold text-sm text-neutral-950 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                 Seekho Dancer
               </span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 font-semibold">
@@ -58,10 +62,10 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
               </span>
             </div>
             <span className="text-xs text-neutral-400 truncate block">
-              dancer@seekhodance.com
+              dancer@seekhodance.com • View Studio Profile →
             </span>
           </div>
-        </div>
+        </Link>
 
         {/* Upgrade / Membership Banner */}
         <div className="p-4 rounded-2xl bg-neutral-950 text-white dark:bg-neutral-900 dark:border dark:border-neutral-700/80 shadow-md space-y-2 relative overflow-hidden">
@@ -87,13 +91,13 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
         {/* Quick Menu Options */}
         <div className="space-y-1 text-xs">
           <Link
-            href="/explore"
+            href="/profile"
             onClick={onClose}
             className="flex items-center justify-between p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition"
           >
             <div className="flex items-center gap-3">
               <BookMarked className="w-4 h-4 text-neutral-400" />
-              <span>Saved Practice Routines</span>
+              <span>My Profile & Saved Practice Routines</span>
             </div>
             <ChevronRight className="w-4 h-4 text-neutral-400" />
           </Link>

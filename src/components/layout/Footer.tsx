@@ -10,14 +10,15 @@ export function Footer() {
           
           {/* Col 1: Brand & Purpose */}
           <div className="space-y-3 md:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-neutral-900 dark:bg-white flex items-center justify-center text-white dark:text-neutral-900 font-bold text-xs">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-7 h-7 rounded-xl bg-neutral-950 dark:bg-white flex items-center justify-center text-white dark:text-neutral-950 font-bold text-xs shadow-xs">
                 SD
               </div>
-              <span className="font-semibold text-sm text-neutral-900 dark:text-white">
+              <span className="font-bold text-sm tracking-tight text-neutral-950 dark:text-white flex items-center gap-1">
                 Seekho Dance
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-600 inline-block" />
               </span>
-            </div>
+            </Link>
             <p className="text-neutral-500 dark:text-neutral-400 text-xs leading-relaxed">
               Designed for dancers and fans who discover choreography on YouTube and want to learn the exact steps at their own pace.
             </p>
@@ -89,7 +90,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/pricing" className="hover:text-neutral-900 dark:hover:text-white transition">
-                  Pricing Plans
+                  Studio Pricing & Membership
+                </Link>
+              </li>
+              <li>
+                <Link href="/profile" className="hover:text-neutral-900 dark:hover:text-white transition">
+                  My Profile & Learning Hub
                 </Link>
               </li>
             </ul>

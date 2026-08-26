@@ -26,6 +26,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FAFAF8" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
@@ -62,7 +63,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 selection:bg-orange-500 selection:text-white font-sans transition-colors duration-200 pb-16 sm:pb-0">
+      <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 selection:bg-orange-500 selection:text-white font-sans transition-colors duration-200 pb-20 sm:pb-0">
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

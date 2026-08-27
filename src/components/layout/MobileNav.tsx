@@ -13,7 +13,7 @@ export function MobileNav() {
 
   const tabs = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Explore", href: "/explore", icon: Compass },
+    { name: "Library", href: "/explore", icon: Compass },
     { name: "Search", onClick: () => setIsSearchOpen(true), icon: Search, isAction: true },
     { name: "Profile", href: "/profile", icon: User },
   ];

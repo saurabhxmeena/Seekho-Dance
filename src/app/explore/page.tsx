@@ -50,10 +50,10 @@ function ExploreContent() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-6">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 block mb-1">
-              Dance Library
+              Curated Choreographies
             </span>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white">
-              Explore Choreographies
+              Dance Library
             </h1>
             <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1 max-w-xl">
               Browse step-by-step breakdowns for songs across Bollywood, Afrobeats, K-Pop, Urban Hip-Hop and more.

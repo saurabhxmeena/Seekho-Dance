@@ -35,7 +35,15 @@ export function filterDances(
     }
 
     if (options.style && options.style !== 'All') {
-      if (!dance.style.toLowerCase().includes(options.style.toLowerCase())) {
+      const optStyle = options.style.toLowerCase().trim();
+      const danceStyle = dance.style.toLowerCase().trim();
+      const firstWord = optStyle.split(" ")[0];
+      const matches =
+        danceStyle.includes(optStyle) ||
+        optStyle.includes(danceStyle) ||
+        danceStyle.includes(firstWord) ||
+        firstWord.includes(danceStyle);
+      if (!matches) {
         return false;
       }
     }

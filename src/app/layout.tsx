@@ -20,6 +20,19 @@ export const metadata: Metadata = {
   title: "Seekho Dance — Learn Choreographies from the Songs You Love",
   description: "Direct step-by-step dance tutorials for viral songs discovered on YouTube. Built for dancers with horizontal mirror mode, custom speed control, and 8-count loop practice.",
   keywords: ["dance tutorials", "learn choreo", "dance step by step", "viral dance tutorials", "bollywood dance tutorial", "afrobeats dance", "k-pop choreo"],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
 };
 
 export const viewport: Viewport = {

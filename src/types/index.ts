@@ -2,14 +2,11 @@ export type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export type DanceStyle =
   | 'Bollywood'
-  | 'Afro Fusion'
-  | 'K-Pop'
-  | 'Urban Hip-Hop'
-  | 'Commercial Pop'
-  | 'South Fusion'
-  | 'Latin / Salsa'
-  | 'Funk & Popping'
-  | 'Contemporary';
+  | 'Traditional'
+  | 'Rajasthani'
+  | 'Haryanvi'
+  | 'Wedding'
+  | 'Punjabi';
 
 export interface DanceStep {
   id: string;

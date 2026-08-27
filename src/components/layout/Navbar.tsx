@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, Compass, Layers, BookOpen, User, Sparkles, Tag } from "lucide-react";
+import { Search, Menu, X, Compass, Layers, User, Sparkles, Tag, Home } from "lucide-react";
 import { SearchModal } from "@/components/search/SearchModal";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { getUserProfile } from "@/lib/storage";
@@ -43,9 +44,9 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Explore", href: "/explore", icon: Compass },
+    { name: "Home", href: "/", icon: Home },
+    { name: "Library", href: "/explore", icon: Compass },
     { name: "Dance Styles", href: "/styles", icon: Layers },
-    { name: "Beginner Picks", href: "/explore?difficulty=Beginner", icon: BookOpen },
     { name: "Pricing", href: "/pricing", icon: Tag },
   ];
 
@@ -69,11 +70,16 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-3 group shrink-0">
               {/* Stylized Dynamic Emblem */}
               <div className="relative">
-                <div className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 flex items-center justify-center font-bold text-sm tracking-tighter shadow-md ring-1 ring-black/10 dark:ring-white/20 group-hover:scale-105 group-hover:-rotate-2 group-active:scale-95 transition-all duration-300 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-orange-600/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative z-10 font-mono tracking-tight font-extrabold text-[13px] sm:text-sm">
-                    SD
-                  </span>
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 dark:bg-neutral-900 border border-amber-200/60 dark:border-neutral-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 group-hover:-rotate-1 group-active:scale-95 transition-all duration-300 relative overflow-hidden flex items-center justify-center p-0.5">
+                  <Image
+                    src="/logo.png"
+                    alt="Seekho Dance Logo"
+                    width={44}
+                    height={44}
+                    className="w-full h-full object-cover rounded-[14px]"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-orange-600/15 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 </div>
                 {/* Live Activity Pulsing Orb */}
                 <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
@@ -177,7 +183,7 @@ export function Navbar() {
             <div className="space-y-1">
               {navLinks.map((link) => {
                 const Icon = link.icon;
-                const isActive = pathname === link.href;
+                const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
                 return (
                   <Link
                     key={link.name}

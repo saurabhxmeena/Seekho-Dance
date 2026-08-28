@@ -36,20 +36,20 @@ export function PracticeControls({
   const isCompleted = completedStepIds.includes(activeStep.id);
 
   return (
-    <div className="p-3.5 sm:p-4 rounded-2xl bg-neutral-900 text-white shadow-xl border border-neutral-800 space-y-3 sm:space-y-0">
+    <div className="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-neutral-900 text-white shadow-xl border border-neutral-800 space-y-2.5 sm:space-y-0 touch-manipulation">
       
       {/* Top Mobile info row / Desktop layout */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3">
         
-        {/* Previous Step (Desktop & Mobile left) */}
+        {/* Previous Step (Desktop) */}
         <button
           onClick={onPrevStep}
           disabled={isFirst}
           className={cn(
-            "hidden sm:flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition shrink-0",
+            "hidden sm:flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition shrink-0 active:scale-95",
             isFirst
               ? "text-neutral-600 bg-neutral-800/40 cursor-not-allowed"
-              : "text-neutral-200 bg-neutral-800 hover:bg-neutral-700 hover:text-white active:scale-95"
+              : "text-neutral-200 bg-neutral-800 hover:bg-neutral-700 hover:text-white"
           )}
         >
           <ChevronLeft className="w-4 h-4" />
@@ -59,7 +59,7 @@ export function PracticeControls({
         {/* Center: Current Step Title & Quick Actions */}
         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left min-w-0">
           <div className="min-w-0">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-orange-400 font-semibold">
+            <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-orange-400 font-semibold">
               Step {activeStep.stepNumber} of {routine.steps.length}
             </div>
             <div className="text-xs sm:text-sm font-semibold truncate text-neutral-100 max-w-xs sm:max-w-md">
@@ -68,11 +68,11 @@ export function PracticeControls({
           </div>
 
           {/* Quick Toggles */}
-          <div className="flex items-center justify-center gap-1.5 pt-1 sm:pt-0">
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 sm:pt-0">
             <button
               onClick={onToggleMirror}
               className={cn(
-                "px-3 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition active:scale-95",
+                "px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition active:scale-90",
                 isMirrored
                   ? "bg-orange-600 text-white font-semibold shadow-xs"
                   : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
@@ -86,7 +86,7 @@ export function PracticeControls({
             <button
               onClick={onToggleLoop}
               className={cn(
-                "px-3 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition active:scale-95",
+                "px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition active:scale-90",
                 isLooping
                   ? "bg-blue-600 text-white font-semibold shadow-xs"
                   : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
@@ -100,7 +100,7 @@ export function PracticeControls({
             <button
               onClick={() => onToggleCompleteStep(activeStep.id)}
               className={cn(
-                "px-3 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition active:scale-95",
+                "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition active:scale-90",
                 isCompleted
                   ? "bg-emerald-600 text-white font-semibold shadow-xs"
                   : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
@@ -108,7 +108,7 @@ export function PracticeControls({
               title="Mark this step completed"
             >
               {isCompleted ? <Check className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-              <span className="text-[11px]">{isCompleted ? "Done" : "Mark Done"}</span>
+              <span className="text-[11px]">{isCompleted ? "Completed" : "Mark Done"}</span>
             </button>
           </div>
         </div>
@@ -118,10 +118,10 @@ export function PracticeControls({
           onClick={onNextStep}
           disabled={isLast}
           className={cn(
-            "hidden sm:flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0",
+            "hidden sm:flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 active:scale-95",
             isLast
               ? "text-neutral-600 bg-neutral-800/40 cursor-not-allowed"
-              : "text-white bg-orange-600 hover:bg-orange-500 shadow-md shadow-orange-600/30 active:scale-95"
+              : "text-white bg-orange-600 hover:bg-orange-500 shadow-md shadow-orange-600/30"
           )}
         >
           <span>Next Step</span>
@@ -129,13 +129,13 @@ export function PracticeControls({
         </button>
       </div>
 
-      {/* Mobile-Only Step Navigation Row */}
-      <div className="grid grid-cols-2 gap-2 sm:hidden pt-1">
+      {/* Mobile-Only Big Thumb Navigation Row */}
+      <div className="grid grid-cols-2 gap-2 sm:hidden pt-0.5">
         <button
           onClick={onPrevStep}
           disabled={isFirst}
           className={cn(
-            "w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition",
+            "w-full h-11 flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold transition active:scale-95",
             isFirst
               ? "text-neutral-600 bg-neutral-800/40 cursor-not-allowed"
               : "text-neutral-200 bg-neutral-800 active:bg-neutral-700"
@@ -149,7 +149,7 @@ export function PracticeControls({
           onClick={onNextStep}
           disabled={isLast}
           className={cn(
-            "w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition",
+            "w-full h-11 flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold transition active:scale-95",
             isLast
               ? "text-neutral-600 bg-neutral-800/40 cursor-not-allowed"
               : "text-white bg-orange-600 active:bg-orange-700 shadow-md shadow-orange-600/30"

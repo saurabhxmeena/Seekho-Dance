@@ -26,9 +26,9 @@ export default function HomePage() {
       {/* 1. HORIZONTAL SWIPEABLE FEATURED SPOTLIGHT CAROUSEL */}
       <FeaturedHeroCarousel routines={featuredRoutines} />
 
-      {/* 4. TRENDING DANCES SECTION (Two-Finger Swipeable) */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto pb-16 sm:pb-24">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8">
+      {/* 4. TRENDING DANCES SECTION (Touch Swipeable) */}
+      <section className="px-3.5 sm:px-6 lg:px-8 max-w-6xl mx-auto pb-12 sm:pb-24">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 sm:gap-3 mb-5 sm:mb-8">
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1">
               <Flame className="w-4 h-4" />
@@ -44,7 +44,7 @@ export default function HomePage() {
 
           <Link
             href="/explore"
-            className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white inline-flex items-center gap-1 transition self-start sm:self-auto"
+            className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white inline-flex items-center gap-1 transition self-start sm:self-auto py-1"
           >
             Explore all <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -52,7 +52,7 @@ export default function HomePage() {
 
         <HorizontalScrollTrack>
           {trendingRoutines.map((routine) => (
-            <div key={routine.id} className="w-[270px] sm:w-[290px] shrink-0 snap-start">
+            <div key={routine.id} className="w-[74vw] max-w-[270px] sm:w-[290px] shrink-0 snap-start">
               <DanceCard routine={routine} />
             </div>
           ))}
@@ -60,8 +60,8 @@ export default function HomePage() {
       </section>
 
       {/* 5. DANCE STYLES TAXONOMY */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto pb-16 sm:pb-24">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8">
+      <section className="px-3.5 sm:px-6 lg:px-8 max-w-6xl mx-auto pb-12 sm:pb-24">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 sm:gap-3 mb-5 sm:mb-8">
           <div>
             <div className="text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1">
               Dance Styles
@@ -76,18 +76,18 @@ export default function HomePage() {
 
           <Link
             href="/styles"
-            className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white inline-flex items-center gap-1 transition self-start sm:self-auto"
+            className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white inline-flex items-center gap-1 transition self-start sm:self-auto py-1"
           >
             All Categories <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {DANCE_CATEGORIES.map((category) => (
             <Link
               key={category.id}
               href={`/explore?style=${encodeURIComponent(category.name)}`}
-              className="group relative rounded-3xl overflow-hidden aspect-[16/10] bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex flex-col justify-end p-5 sm:p-6 hover:shadow-xl hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300 active:scale-98"
+              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[16/10] bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex flex-col justify-end p-5 sm:p-6 hover:shadow-xl hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300 active:scale-98 touch-manipulation"
             >
               {/* Background Image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -104,7 +104,7 @@ export default function HomePage() {
                   <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                     {category.name}
                   </h3>
-                  <div className="w-6 h-6 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-6 h-6 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
@@ -117,9 +117,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. BEGINNER-FRIENDLY SECTION (Two-Finger Swipeable) */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto pb-16 sm:pb-24">
-        <div className="p-7 sm:p-10 rounded-[32px] sm:rounded-[36px] bg-neutral-100 dark:bg-[#18181A] border border-neutral-200/80 dark:border-neutral-800 space-y-6">
+      {/* 6. BEGINNER-FRIENDLY SECTION (Touch Swipeable) */}
+      <section className="px-3.5 sm:px-6 lg:px-8 max-w-6xl mx-auto pb-12 sm:pb-24">
+        <div className="p-5 sm:p-10 rounded-[28px] sm:rounded-[36px] bg-neutral-100 dark:bg-[#18181A] border border-neutral-200/80 dark:border-neutral-800 space-y-5 sm:space-y-6">
           <div className="max-w-2xl space-y-2">
             <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
               Zero to One
@@ -134,7 +134,7 @@ export default function HomePage() {
 
           <HorizontalScrollTrack>
             {beginnerPicks.map((routine) => (
-              <div key={routine.id} className="w-[270px] sm:w-[290px] shrink-0 snap-start">
+              <div key={routine.id} className="w-[74vw] max-w-[270px] sm:w-[290px] shrink-0 snap-start">
                 <DanceCard routine={routine} />
               </div>
             ))}

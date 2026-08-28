@@ -1,75 +1,68 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Search, User } from "lucide-react";
-import { SearchModal } from "@/components/search/SearchModal";
+import { Home, Compass, Layers, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function MobileNav() {
   const pathname = usePathname();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const tabs = [
+  // Navigation tabs matching top bar exactly
+  const navTabs = [
     { name: "Home", href: "/", icon: Home },
     { name: "Library", href: "/explore", icon: Compass },
-    { name: "Search", onClick: () => setIsSearchOpen(true), icon: Search, isAction: true },
-    { name: "Profile", href: "/profile", icon: User },
+    { name: "Styles", href: "/styles", icon: Layers },
+    { name: "Pricing", href: "/pricing", icon: Tag },
   ];
 
   return (
-    <>
-      {/* Smartphone Bottom Navigation Bar (Apple-Style Frosted Glass) */}
-      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-2xl border-t border-neutral-200/60 dark:border-neutral-800/60 px-4 pt-2 pb-[max(env(safe-area-inset-bottom),10px)] shadow-[0_-4px_24px_rgba(0,0,0,0.06)] dark:shadow-none transition-all">
-        <div className="flex items-center justify-around max-w-md mx-auto">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive =
-              !tab.isAction &&
-              tab.href &&
-              (pathname === tab.href || (tab.href !== "/" && pathname.startsWith(tab.href)));
+    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-[#FAFAF8]/85 dark:bg-[#0a0a0a]/85 backdrop-blur-xl border-t border-neutral-200/60 dark:border-neutral-800/60 px-3 pt-1.5 pb-[max(env(safe-area-inset-bottom,0px),8px)] shadow-[0_-4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] transition-all">
+      <div className="flex items-center justify-around max-w-md mx-auto">
+        {navTabs.map((tab) => {
+          const isActive =
+            pathname === tab.href ||
+            (tab.href !== "/" && pathname.startsWith(tab.href));
 
-            if (tab.isAction) {
-              return (
-                <button
-                  key={tab.name}
-                  onClick={tab.onClick}
-                  className="flex-1 flex flex-col items-center justify-center py-1 px-2 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-transform active:scale-90"
-                  aria-label={tab.name}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-[10px] font-medium tracking-tight mt-0.5">{tab.name}</span>
-                </button>
-              );
-            }
+          const Icon = tab.icon;
 
-            return (
-              <Link
-                key={tab.name}
-                href={tab.href || "/"}
+          return (
+            <Link
+              key={tab.name}
+              href={tab.href}
+              className={cn(
+                "flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl transition-all duration-150 active:scale-95 touch-manipulation relative",
+                isActive
+                  ? "text-neutral-950 dark:text-white"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+              )}
+            >
+              <div className="relative">
+                <Icon
+                  className={cn(
+                    "w-5 h-5 transition-all duration-150",
+                    isActive
+                      ? "text-neutral-950 dark:text-white scale-105 stroke-[2.3px]"
+                      : "text-neutral-500 dark:text-neutral-400"
+                  )}
+                />
+              </div>
+              <span
                 className={cn(
-                  "flex-1 flex flex-col items-center justify-center py-1 px-2 transition-all duration-200 active:scale-90 relative",
-                  isActive
-                    ? "text-orange-600 dark:text-orange-400 font-bold"
-                    : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                  "text-[10px] tracking-tight mt-0.5",
+                  isActive ? "font-bold text-neutral-950 dark:text-white" : "font-medium"
                 )}
               >
-                <div className="relative">
-                  <Icon className={cn("w-5 h-5 transition-transform", isActive && "scale-110 stroke-[2.4px]")} />
-                  {isActive && (
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-orange-600 dark:bg-orange-400" />
-                  )}
-                </div>
-                <span className="text-[10px] tracking-tight mt-0.5">{tab.name}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
-
-      {/* Global Search Modal */}
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-    </>
+                {tab.name}
+              </span>
+              {isActive && (
+                <span className="w-1 h-1 rounded-full bg-orange-600 dark:bg-orange-400 mt-0.5 shadow-xs" />
+              )}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

@@ -62,21 +62,21 @@ export function Navbar() {
             : "bg-[#FAFAF8]/40 dark:bg-[#0a0a0a]/40 backdrop-blur-xs border-b border-transparent"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-15 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           
           {/* 1. Left: Brand & Nav Links */}
-          <div className="flex items-center gap-6 lg:gap-8">
+          <div className="flex items-center gap-4 lg:gap-8 min-w-0">
             {/* High-Craft Brand Logo Lockup */}
-            <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
               {/* Stylized Dynamic Emblem */}
               <div className="relative">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 dark:bg-neutral-900 border border-amber-200/60 dark:border-neutral-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 group-hover:-rotate-1 group-active:scale-95 transition-all duration-300 relative overflow-hidden flex items-center justify-center p-0.5">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 dark:bg-neutral-900 border border-amber-200/60 dark:border-neutral-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 group-hover:-rotate-1 group-active:scale-95 transition-all duration-300 relative overflow-hidden flex items-center justify-center p-0.5">
                   <Image
                     src="/logo.png"
                     alt="Seekho Dance Logo"
                     width={44}
                     height={44}
-                    className="w-full h-full object-cover rounded-[14px]"
+                    className="w-full h-full object-cover rounded-[13px] sm:rounded-[14px]"
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-orange-600/15 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -89,17 +89,12 @@ export function Navbar() {
               </div>
 
               {/* Brand Typography */}
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-base sm:text-[17px] tracking-tight text-neutral-950 dark:text-white leading-none">
-                    Seekho
-                  </span>
-                  <span className="font-bold text-base sm:text-[17px] tracking-tight bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent leading-none">
-                    Dance
-                  </span>
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-mono tracking-wider uppercase text-neutral-400 dark:text-neutral-500 font-medium mt-0.5">
-                  Viral Choreography Studio
+              <div className="flex items-center gap-1">
+                <span className="font-extrabold text-[15px] sm:text-[17px] tracking-tight text-neutral-950 dark:text-white leading-none">
+                  Seekho
+                </span>
+                <span className="font-bold text-[15px] sm:text-[17px] tracking-tight bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent leading-none">
+                  Dance
                 </span>
               </div>
             </Link>
@@ -127,30 +122,34 @@ export function Navbar() {
           </div>
 
           {/* 2. Right: Search, Theme, Profile & Mobile Trigger */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             
-            {/* Quick Search Button */}
+            {/* Quick Search Button (Responsive Pill on sm+, Icon button on mobile) */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs text-neutral-500 dark:text-neutral-400 bg-white/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 rounded-full hover:border-neutral-300 dark:hover:border-neutral-700 hover:bg-white dark:hover:bg-neutral-800 transition-all w-32 sm:w-56 justify-between group shadow-2xs backdrop-blur-xs active:scale-98"
+              className="flex items-center gap-2 p-2 sm:px-3 sm:py-1.5 text-xs text-neutral-500 dark:text-neutral-400 bg-white/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 rounded-full hover:border-neutral-300 dark:hover:border-neutral-700 hover:bg-white dark:hover:bg-neutral-800 transition-all sm:w-48 lg:w-56 justify-center sm:justify-between group shadow-2xs backdrop-blur-xs active:scale-95"
+              aria-label="Search Choreographies"
+              title="Search (⌘K)"
             >
               <div className="flex items-center gap-2 truncate">
-                <Search className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-200 transition-colors shrink-0" />
-                <span className="truncate">Search song, style...</span>
+                <Search className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-200 transition-colors shrink-0" />
+                <span className="hidden sm:inline truncate">Search song, style...</span>
               </div>
               <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium text-neutral-400 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200/80 dark:border-neutral-700/80 rounded">
                 ⌘K
               </kbd>
             </button>
 
-            {/* Light / Dark Mode Toggle */}
-            <ThemeToggle className="shrink-0" />
+            {/* Light / Dark Mode Toggle (Desktop only, mobile accesses via hamburger drawer) */}
+            <div className="hidden sm:flex items-center">
+              <ThemeToggle className="shrink-0" />
+            </div>
 
             {/* Profile Avatar Pill Button */}
             <Link
               href="/profile"
               className={cn(
-                "flex items-center gap-2 p-1 pl-1 pr-2.5 sm:pr-3 rounded-full border transition-all duration-200 group shadow-2xs backdrop-blur-xs active:scale-95 shrink-0",
+                "flex items-center gap-2 p-0.5 sm:p-1 sm:pl-1 sm:pr-3 rounded-full border transition-all duration-200 group shadow-2xs backdrop-blur-xs active:scale-95 shrink-0",
                 pathname === "/profile"
                   ? "bg-orange-50 dark:bg-orange-950/40 border-orange-500/40 dark:border-orange-500/40"
                   : "bg-white/80 dark:bg-neutral-900/80 hover:bg-neutral-100 dark:hover:bg-neutral-800 border-neutral-200/80 dark:border-neutral-800"
@@ -158,10 +157,10 @@ export function Navbar() {
               title="My Profile & Progress"
               aria-label="User Profile"
             >
-              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-400 text-white flex items-center justify-center font-bold text-[11px] shadow-xs ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-400 text-white flex items-center justify-center font-bold text-[11px] shadow-xs ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 transition-transform">
                 {userInitials}
               </div>
-              <span className="hidden sm:inline text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
+              <span className="hidden md:inline text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
                 Profile
               </span>
             </Link>
@@ -169,7 +168,7 @@ export function Navbar() {
             {/* Mobile Navigation Drawer Trigger */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className="md:hidden p-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 active:scale-95"
               aria-label="Toggle Navigation Menu"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

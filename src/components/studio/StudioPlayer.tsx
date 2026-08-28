@@ -160,12 +160,49 @@ export function StudioPlayer({
 
   const speeds = [0.5, 0.75, 1.0, 1.25];
 
+  const [seekFeedback, setSeekFeedback] = useState<{ direction: "left" | "right"; text: string } | null>(null);
+  const lastTapRef = useRef<{ time: number; x: number }>({ time: 0, x: 0 });
+
+  const handleVideoTap = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTapRef.current.time;
+
+    // Detect double-tap within 300ms
+    if (timeSinceLastTap < 300) {
+      if (clickX < width * 0.35) {
+        // Left double-tap: rewind 5s
+        if (videoRef.current) {
+          videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 5);
+          setSeekFeedback({ direction: "left", text: "-5s" });
+          setTimeout(() => setSeekFeedback(null), 600);
+        }
+      } else if (clickX > width * 0.65) {
+        // Right double-tap: forward 5s
+        if (videoRef.current) {
+          videoRef.current.currentTime = Math.min(duration || 105, videoRef.current.currentTime + 5);
+          setSeekFeedback({ direction: "right", text: "+5s" });
+          setTimeout(() => setSeekFeedback(null), 600);
+        }
+      } else {
+        togglePlay();
+      }
+    } else {
+      // Single tap: toggle controls visibility or play
+      setShowControls((prev) => !prev);
+    }
+
+    lastTapRef.current = { time: now, x: clickX };
+  };
+
   return (
     <div
       ref={containerRef}
       className={cn(
-        "relative group bg-black rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 select-none transition-all",
-        isTheater ? "w-full aspect-[21/9] sm:aspect-[16/9]" : "w-full aspect-[16/9]"
+        "relative group bg-black rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-neutral-800 select-none transition-all touch-manipulation",
+        isTheater ? "w-full aspect-[21/9] sm:aspect-[16/9]" : "w-full aspect-[16/10] sm:aspect-[16/9]"
       )}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => isPlaying && setShowControls(false)}
@@ -189,29 +226,48 @@ export function StudioPlayer({
           setIsPlaying(false);
           onPlayStateChange?.(false);
         }}
-        onClick={togglePlay}
         playsInline
       />
 
+      {/* Transparent Tap & Gesture Overlay */}
+      <div
+        onClick={handleVideoTap}
+        className="absolute inset-0 z-10 cursor-pointer"
+      />
+
+      {/* Double Tap Seek Feedback Ripples */}
+      {seekFeedback && (
+        <div
+          className={cn(
+            "absolute inset-y-0 flex items-center justify-center pointer-events-none z-30 animate-scale-in",
+            seekFeedback.direction === "left" ? "left-0 w-1/3 bg-white/10" : "right-0 w-1/3 bg-white/10"
+          )}
+        >
+          <div className="px-3 py-1.5 rounded-full bg-black/80 text-white text-xs font-mono font-bold flex items-center gap-1 shadow-lg">
+            <span>{seekFeedback.text}</span>
+          </div>
+        </div>
+      )}
+
       {/* Top Floating Status Badges */}
-      <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
-        <div className="flex items-center gap-2">
+      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between pointer-events-none z-20">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           {isMirrored && (
-            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-orange-600 text-white flex items-center gap-1.5 shadow-md animate-scale-in">
-              <FlipHorizontal className="w-3.5 h-3.5" />
-              MIRROR ON
+            <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs font-semibold bg-orange-600 text-white flex items-center gap-1 shadow-md animate-scale-in">
+              <FlipHorizontal className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span>MIRROR</span>
             </span>
           )}
           {isLooping && (
-            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white flex items-center gap-1.5 shadow-md animate-scale-in">
-              <Repeat className="w-3.5 h-3.5" />
-              LOOP STEP {activeStep.stepNumber}
+            <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs font-semibold bg-blue-600 text-white flex items-center gap-1 shadow-md animate-scale-in">
+              <Repeat className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span>LOOP STEP {activeStep.stepNumber}</span>
             </span>
           )}
           {playbackSpeed !== 1.0 && (
-            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-neutral-900/90 text-neutral-200 border border-neutral-700 backdrop-blur-xs flex items-center gap-1 animate-scale-in">
+            <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs font-semibold bg-neutral-900/90 text-neutral-200 border border-neutral-700 backdrop-blur-xs flex items-center gap-1 animate-scale-in">
               <Gauge className="w-3 h-3 text-orange-400" />
-              {playbackSpeed}x SPEED
+              <span>{playbackSpeed}x</span>
             </span>
           )}
         </div>
@@ -231,10 +287,10 @@ export function StudioPlayer({
       {!isPlaying && (
         <div
           onClick={togglePlay}
-          className="absolute inset-0 bg-black/35 backdrop-blur-[2px] flex items-center justify-center cursor-pointer z-10 transition-all duration-300"
+          className="absolute inset-0 bg-black/35 backdrop-blur-[2px] flex items-center justify-center cursor-pointer z-15 transition-all duration-300"
         >
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 text-neutral-950 flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]">
-            <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-1 text-orange-600" />
+          <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-white/95 text-neutral-950 flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]">
+            <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-current translate-x-0.5 sm:translate-x-1 text-orange-600" />
           </div>
         </div>
       )}
@@ -242,12 +298,12 @@ export function StudioPlayer({
       {/* Bottom Controls Overlay */}
       <div
         className={cn(
-          "absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-12 pb-3 px-4 z-20 transition-opacity duration-200",
+          "absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-10 sm:pt-12 pb-2.5 sm:pb-3 px-3 sm:px-4 z-25 transition-opacity duration-200 pointer-events-auto",
           showControls || !isPlaying ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
         {/* Step Marker Progress Bar */}
-        <div className="space-y-1.5 mb-3">
+        <div className="space-y-1 mb-2 sm:mb-3">
           {/* Visual Step Markers Bar */}
           <div className="relative w-full h-2 bg-neutral-800/90 rounded-full overflow-hidden cursor-pointer flex">
             {routine.steps.map((step) => {
@@ -285,21 +341,21 @@ export function StudioPlayer({
             step={0.1}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1 bg-transparent accent-orange-500 cursor-pointer -mt-1 block"
+            className="w-full h-2 bg-transparent accent-orange-500 cursor-pointer -mt-1 block py-1"
           />
         </div>
 
-        {/* Action Controls Bar */}
-        <div className="flex items-center justify-between text-white text-xs">
+        {/* Action Controls Bar (Mobile Responsive Multi-Item Row) */}
+        <div className="flex items-center justify-between text-white text-xs gap-1 sm:gap-2">
           
           {/* Left: Play/Pause, Rewind, Time */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
             <button
               onClick={togglePlay}
-              className="p-1.5 rounded-full hover:bg-white/20 text-white transition"
+              className="p-1.5 sm:p-2 rounded-full hover:bg-white/20 text-white transition active:scale-90"
               aria-label={isPlaying ? "Pause" : "Play"}
             >
-              {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
+              {isPlaying ? <Pause className="w-4 h-4 sm:w-5 sm:h-5 fill-current" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />}
             </button>
 
             <button
@@ -308,61 +364,61 @@ export function StudioPlayer({
                   videoRef.current.currentTime = activeStep.timestampStart;
                 }
               }}
-              className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition"
+              className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition active:scale-90"
               title="Restart Step"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
 
             {/* Time Indicator */}
-            <div className="font-mono text-xs text-neutral-300">
+            <div className="font-mono text-[10px] sm:text-xs text-neutral-300">
               <span>{formatTime(currentTime)}</span>
-              <span className="text-neutral-500 mx-1">/</span>
+              <span className="text-neutral-500 mx-0.5 sm:mx-1">/</span>
               <span className="text-neutral-400">{formatTime(duration || 105)}</span>
             </div>
           </div>
 
           {/* Center: DANCE LEARNING SUPER-CONTROLS (Mirror, Loop, Speeds) */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none py-0.5">
             
             {/* Mirror Toggle */}
             <button
               onClick={onToggleMirror}
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition shadow-xs",
+                "flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition shadow-xs active:scale-90 shrink-0",
                 isMirrored
                   ? "bg-orange-600 text-white ring-1 ring-orange-400"
                   : "bg-white/15 text-neutral-200 hover:bg-white/25 hover:text-white"
               )}
-              title="Mirror Mode: Invert camera horizontally to mirror dancer (M)"
+              title="Mirror Mode (M)"
             >
-              <FlipHorizontal className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Mirror</span>
+              <FlipHorizontal className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span>Mirror</span>
             </button>
 
             {/* Loop Toggle */}
             <button
               onClick={onToggleLoop}
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition shadow-xs",
+                "flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition shadow-xs active:scale-90 shrink-0",
                 isLooping
                   ? "bg-blue-600 text-white ring-1 ring-blue-400"
                   : "bg-white/15 text-neutral-200 hover:bg-white/25 hover:text-white"
               )}
               title="Loop Active Step (L)"
             >
-              <Repeat className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Loop Step</span>
+              <Repeat className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span>Loop</span>
             </button>
 
             {/* Speed Selector */}
-            <div className="flex items-center bg-white/15 rounded-lg p-0.5 border border-white/10">
+            <div className="flex items-center bg-white/15 rounded-lg p-0.5 border border-white/10 shrink-0">
               {speeds.map((spd) => (
                 <button
                   key={spd}
                   onClick={() => onSpeedChange(spd)}
                   className={cn(
-                    "px-2 py-1 rounded text-[11px] font-semibold transition",
+                    "px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-[11px] font-semibold transition active:scale-95",
                     playbackSpeed === spd
                       ? "bg-white text-neutral-950 shadow-xs"
                       : "text-neutral-300 hover:text-white"
@@ -375,21 +431,21 @@ export function StudioPlayer({
           </div>
 
           {/* Right: Audio & Fullscreen */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             <button
               onClick={toggleMute}
-              className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition"
+              className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition active:scale-90"
               aria-label={isMuted ? "Unmute" : "Mute"}
             >
-              {isMuted ? <VolumeX className="w-4 h-4 text-orange-400" /> : <Volume2 className="w-4 h-4" />}
+              {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </button>
 
             <button
               onClick={toggleFullscreen}
-              className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition"
+              className="p-1.5 rounded-full hover:bg-white/20 text-neutral-300 hover:text-white transition active:scale-90"
               aria-label="Fullscreen"
             >
-              <Maximize2 className="w-4 h-4" />
+              <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>

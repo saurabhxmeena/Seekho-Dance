@@ -130,29 +130,29 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-12 sm:pt-20 px-3 sm:px-4 bg-black/60 dark:bg-black/75 backdrop-blur-md transition-all duration-200"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 pt-3 sm:pt-20 bg-black/65 dark:bg-black/80 backdrop-blur-md transition-all duration-200"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl bg-white dark:bg-[#161618] border border-neutral-200/90 dark:border-neutral-800/90 rounded-[26px] shadow-2xl shadow-black/20 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[82vh]"
+        className="w-full max-w-2xl bg-white dark:bg-[#161618] border border-neutral-200/90 dark:border-neutral-800/90 rounded-3xl sm:rounded-[26px] shadow-2xl shadow-black/20 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh] sm:max-h-[82vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Header Bar */}
-        <div className="relative flex items-center px-4 sm:px-5 py-3.5 border-b border-neutral-100 dark:border-neutral-800/80 gap-3">
-          <Search className="w-5 h-5 text-orange-600 dark:text-orange-500 shrink-0" />
+        <div className="relative flex items-center px-4 sm:px-5 py-3 sm:py-3.5 border-b border-neutral-100 dark:border-neutral-800/80 gap-2.5 sm:gap-3">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-500 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search song, dance style, or creator (e.g. Tauba Tauba, K-Pop, Tyla)..."
-            className="w-full bg-transparent text-sm sm:text-base text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 outline-none font-medium"
+            placeholder="Search song, style, or creator..."
+            className="w-full bg-transparent text-base text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 outline-none font-medium"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery("")}
-              className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition"
+              className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition active:scale-90"
               aria-label="Clear search query"
             >
               <X className="w-4 h-4" />
@@ -162,17 +162,23 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               ESC
             </kbd>
           )}
+          <button
+            onClick={onClose}
+            className="sm:hidden p-1 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 text-xs font-semibold"
+          >
+            Done
+          </button>
         </div>
 
         {/* Quick Filter Bar */}
-        <div className="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 bg-neutral-50/70 dark:bg-neutral-900/40 border-b border-neutral-100 dark:border-neutral-800/60 overflow-x-auto scrollbar-none">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 mr-1 shrink-0">
+        <div className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 bg-neutral-50/70 dark:bg-neutral-900/40 border-b border-neutral-100 dark:border-neutral-800/60 overflow-x-auto scrollbar-none">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 mr-0.5 shrink-0 hidden xs:inline">
             Filters:
           </span>
           <button
             onClick={() => setActiveFilter("all")}
             className={cn(
-              "px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0",
+              "px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0 touch-manipulation",
               activeFilter === "all"
                 ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-semibold shadow-2xs"
                 : "bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 border border-neutral-200/80 dark:border-neutral-700/80"
@@ -183,7 +189,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           <button
             onClick={() => handleFilterClick("trending")}
             className={cn(
-              "flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0",
+              "flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0 touch-manipulation",
               activeFilter === "trending"
                 ? "bg-orange-600 text-white font-semibold shadow-2xs"
                 : "bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 border border-neutral-200/80 dark:border-neutral-700/80"
@@ -195,7 +201,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           <button
             onClick={() => handleFilterClick("beginner")}
             className={cn(
-              "px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0",
+              "px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0 touch-manipulation",
               activeFilter === "beginner"
                 ? "bg-emerald-600 text-white font-semibold shadow-2xs"
                 : "bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 border border-neutral-200/80 dark:border-neutral-700/80"
@@ -206,7 +212,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           <button
             onClick={() => handleFilterClick("advanced")}
             className={cn(
-              "px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0",
+              "px-2.5 py-1 rounded-full text-xs font-medium transition shrink-0 touch-manipulation",
               activeFilter === "advanced"
                 ? "bg-purple-600 text-white font-semibold shadow-2xs"
                 : "bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 border border-neutral-200/80 dark:border-neutral-700/80"
@@ -229,7 +235,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         </div>
 
         {/* Results List */}
-        <div ref={listRef} className="overflow-y-auto p-2 sm:p-3 space-y-1.5 flex-1 divide-y divide-neutral-100/50 dark:divide-neutral-800/30">
+        <div ref={listRef} className="overflow-y-auto p-2 sm:p-3 space-y-1 sm:space-y-1.5 flex-1 divide-y divide-neutral-100/50 dark:divide-neutral-800/30">
           {displayRoutines.length > 0 ? (
             displayRoutines.map((routine, idx) => {
               const isSelected = idx === selectedIndex;
@@ -240,7 +246,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   onMouseEnter={() => setSelectedIndex(idx)}
                   onClick={() => handleSelectRoutine(routine.id)}
                   className={cn(
-                    "flex items-center gap-3 sm:gap-3.5 p-2.5 sm:p-3 rounded-2xl cursor-pointer transition-all duration-150 group",
+                    "flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-3 rounded-2xl cursor-pointer transition-all duration-150 group active:scale-[0.98] touch-manipulation",
                     isSelected
                       ? "bg-orange-50/80 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/50 shadow-2xs"
                       : "hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 border border-transparent"
@@ -266,7 +272,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <h4
                         className={cn(
                           "text-sm font-bold truncate transition-colors",
@@ -279,7 +285,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       </h4>
                       <Badge difficulty={routine.difficulty} variant="difficulty" className="text-[9px] sm:text-[10px] py-0 px-1.5 shrink-0" />
                       {routine.isTrending && (
-                        <span className="hidden sm:inline-flex items-center gap-0.5 text-[10px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/60 px-1.5 py-0.2 rounded shrink-0">
+                        <span className="hidden xs:inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/60 px-1.5 py-0.2 rounded shrink-0">
                           <Flame className="w-2.5 h-2.5" /> Trending
                         </span>
                       )}
@@ -289,7 +295,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       {routine.artist} • {routine.style}
                     </p>
 
-                    <div className="flex items-center gap-2 mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">
+                    <div className="flex items-center gap-2 mt-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
                       <span>By {routine.creator}</span>
                       <span>•</span>
                       <span>{routine.steps.length} Steps</span>
@@ -319,7 +325,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               );
             })
           ) : (
-            <div className="py-12 text-center space-y-3 px-4">
+            <div className="py-10 text-center space-y-3 px-4">
               <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 text-neutral-400 flex items-center justify-center mx-auto">
                 <Music className="w-6 h-6" />
               </div>
@@ -338,7 +344,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <button
                     key={sample}
                     onClick={() => setQuery(sample)}
-                    className="px-3 py-1 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full transition"
+                    className="px-3 py-1 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full transition active:scale-95"
                   >
                     {sample}
                   </button>
@@ -372,7 +378,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             }}
             className="font-medium text-orange-600 dark:text-orange-400 hover:underline inline-flex items-center gap-1"
           >
-            <span>Browse library ({DANCE_ROUTINES.length} dances)</span>
+            <span>Browse all ({DANCE_ROUTINES.length})</span>
             <ArrowRight className="w-3 h-3" />
           </button>
         </div>

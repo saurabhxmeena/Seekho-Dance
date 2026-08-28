@@ -44,29 +44,29 @@ function ExploreContent() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6 sm:py-14 space-y-5 sm:space-y-8">
         
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-6">
+        <div className="flex items-end justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-4 sm:pb-6">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 block mb-1">
               Curated Choreographies
             </span>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white">
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white">
               Dance Library
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1 max-w-xl">
-              Browse step-by-step breakdowns for songs across Bollywood, Afrobeats, K-Pop, Urban Hip-Hop and more.
+            <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-0.5 sm:mt-1 max-w-xl">
+              Browse step-by-step breakdowns for songs across Bollywood, Traditional, Rajasthani, and more.
             </p>
           </div>
 
           {/* Grid / List View Toggle */}
-          <div className="flex items-center gap-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-1 shrink-0 self-start md:self-auto">
+          <div className="flex items-center gap-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-1 shrink-0">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-1.5 rounded-lg transition ${
+              className={`p-1.5 rounded-lg transition active:scale-95 ${
                 viewMode === "grid"
-                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950"
+                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-2xs"
                   : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
               }`}
               title="Grid View"
@@ -75,9 +75,9 @@ function ExploreContent() {
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`p-1.5 rounded-lg transition ${
+              className={`p-1.5 rounded-lg transition active:scale-95 ${
                 viewMode === "list"
-                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950"
+                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-2xs"
                   : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
               }`}
               title="List View"
@@ -103,13 +103,13 @@ function ExploreContent() {
         {/* Content Display */}
         {filteredDances.length > 0 ? (
           viewMode === "grid" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 pt-1 sm:pt-2">
               {filteredDances.map((routine) => (
                 <DanceCard key={routine.id} routine={routine} />
               ))}
             </div>
           ) : (
-            <div className="space-y-2.5 pt-2">
+            <div className="space-y-2 pt-1 sm:pt-2">
               {filteredDances.map((routine, idx) => (
                 <SongRow key={routine.id} routine={routine} index={idx} />
               ))}

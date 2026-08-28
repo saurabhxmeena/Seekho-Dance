@@ -54,19 +54,19 @@ export function CountSheet({ bpm, isPlaying, countNotation, keyCounts }: CountSh
             <div
               key={beat}
               className={cn(
-                "h-9 sm:h-12 rounded-xl flex flex-col items-center justify-center transition-all duration-150 font-mono select-none relative overflow-hidden gpu-layer",
+                "h-10 sm:h-12 rounded-xl flex flex-col items-center justify-center transition-all duration-150 font-mono select-none relative overflow-hidden gpu-layer",
                 isCurrent
-                  ? "bg-orange-600 text-white font-bold scale-108 shadow-lg shadow-orange-600/40 z-10"
+                  ? "bg-orange-600 text-white font-bold scale-105 sm:scale-108 shadow-lg shadow-orange-600/40 z-10"
                   : isDownbeat
                   ? "bg-neutral-200/80 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 font-semibold"
                   : "bg-neutral-100 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400"
               )}
             >
               {isCurrent && (
-                <span className="absolute inset-0 bg-white/20 animate-pulse pointer-events-none" />
+                <span className="absolute inset-0 bg-white/25 animate-pulse pointer-events-none" />
               )}
-              <span className="text-[11px] sm:text-sm leading-tight relative z-10">{beat}</span>
-              <span className="text-[8px] sm:text-[9px] uppercase tracking-tighter opacity-75 leading-none relative z-10">
+              <span className="text-xs sm:text-sm font-bold leading-tight relative z-10">{beat}</span>
+              <span className="text-[7px] sm:text-[9px] uppercase tracking-tighter opacity-80 leading-none relative z-10 mt-0.5">
                 {isDownbeat ? "hit" : "&"}
               </span>
             </div>

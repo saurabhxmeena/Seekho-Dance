@@ -76,7 +76,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 selection:bg-orange-500 selection:text-white font-sans transition-colors duration-200 pb-20 sm:pb-0">
+      <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 selection:bg-orange-500 selection:text-white font-sans transition-colors duration-200 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0">
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

@@ -195,11 +195,11 @@ export default function ProfilePage() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 sm:gap-10">
             
             {/* Left: Distinct Squircle Avatar & Identity */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
               
               {/* Organic Squircle Mask Avatar */}
               <div className="relative shrink-0 group">
-                <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[36px] overflow-hidden bg-neutral-200 dark:bg-neutral-800 ring-4 ring-white dark:ring-[#161618] shadow-xl relative">
+                <div className="w-20 h-20 sm:w-36 sm:h-36 rounded-2xl sm:rounded-[36px] overflow-hidden bg-neutral-200 dark:bg-neutral-800 ring-4 ring-white dark:ring-[#161618] shadow-xl relative">
                   <Image
                     src="/dancer_avatar.jpg"
                     alt={profile.name}
@@ -212,17 +212,17 @@ export default function ProfilePage() {
 
                 {/* Status Dot */}
                 <div
-                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-orange-600 border-2 border-white dark:border-[#161618] flex items-center justify-center text-white shadow-md"
+                  className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-orange-600 border-2 border-white dark:border-[#161618] flex items-center justify-center text-white shadow-md"
                   title="Practice Active"
                 >
-                  <Flame className="w-3.5 h-3.5 fill-current" />
+                  <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
                 </div>
               </div>
 
               {/* User Bio & Meta Details */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {/* Name & PRO Badge */}
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                   {isEditingName ? (
                     <div className="flex items-center gap-1.5">
                       <input
@@ -230,30 +230,30 @@ export default function ProfilePage() {
                         value={nameInput}
                         onChange={(e) => setNameInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSaveName()}
-                        className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white px-3 py-1 rounded-xl outline-none border border-neutral-300 dark:border-neutral-700 shadow-xs"
+                        className="text-xl sm:text-3xl font-extrabold tracking-tight bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white px-3 py-1 rounded-xl outline-none border border-neutral-300 dark:border-neutral-700 shadow-xs"
                         autoFocus
                       />
                       <button
                         onClick={handleSaveName}
-                        className="p-2 rounded-xl bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 hover:opacity-90 shadow-xs"
+                        className="p-2 rounded-xl bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 hover:opacity-90 shadow-xs active:scale-95"
                       >
                         <Check className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setIsEditingName(false)}
-                        className="p-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
+                        className="p-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 active:scale-95"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2.5">
-                      <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-950 dark:text-white">
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-xl sm:text-4xl font-extrabold tracking-tight text-neutral-950 dark:text-white">
                         {profile.name}
                       </h1>
                       <button
                         onClick={() => setIsEditingName(true)}
-                        className="p-1.5 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition rounded-lg hover:bg-neutral-200/60 dark:hover:bg-neutral-800"
+                        className="p-1.5 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition rounded-lg hover:bg-neutral-200/60 dark:hover:bg-neutral-800 active:scale-90"
                         title="Edit Name"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -262,14 +262,14 @@ export default function ProfilePage() {
                   )}
 
                   {/* PRO / Studio Pass Pill Badge */}
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-[#6C63FF]/15 text-[#544af4] dark:text-[#8c85ff] border border-[#6C63FF]/30 tracking-wide uppercase">
+                  <span className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold bg-[#6C63FF]/15 text-[#544af4] dark:text-[#8c85ff] border border-[#6C63FF]/30 tracking-wide uppercase">
                     <span>PRO</span>
                     <Zap className="w-3 h-3 fill-current" />
                   </span>
                 </div>
 
                 {/* Subtitle / Bio */}
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300 max-w-md leading-relaxed">
+                <p className="text-xs sm:text-sm font-medium text-neutral-600 dark:text-neutral-300 max-w-md leading-relaxed">
                   Viral Choreo Explorer & Performer
                   <span className="text-neutral-400 dark:text-neutral-500 block sm:inline sm:before:content-['•'] sm:before:mx-2">
                     Bollywood, Hip-Hop & Afrobeat
@@ -277,22 +277,22 @@ export default function ProfilePage() {
                 </p>
 
                 {/* Location & Studio Meta */}
-                <div className="flex items-center gap-1.5 text-xs text-neutral-400 dark:text-neutral-500">
+                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 dark:text-neutral-500">
                   <MapPin className="w-3.5 h-3.5 shrink-0" />
                   <span>Seekho Dance Studio • Mumbai, India</span>
                 </div>
 
-                {/* Action Buttons (Follow / Get in touch style) */}
-                <div className="pt-2 flex items-center gap-3 flex-wrap">
+                {/* Action Buttons */}
+                <div className="pt-1.5 sm:pt-2 flex items-center gap-2 sm:gap-3 flex-wrap">
                   <button
                     onClick={() => setIsEditingName(true)}
-                    className="px-6 py-2.5 rounded-full text-xs font-bold bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-950 transition active:scale-98 shadow-sm"
+                    className="px-5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-bold bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-950 transition active:scale-95 shadow-sm touch-manipulation"
                   >
                     Edit Profile
                   </button>
                   <Link
                     href="/pricing"
-                    className="px-6 py-2.5 rounded-full text-xs font-bold bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-300/80 dark:border-neutral-700 transition active:scale-98 shadow-2xs"
+                    className="px-5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-bold bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-300/80 dark:border-neutral-700 transition active:scale-95 shadow-2xs touch-manipulation"
                   >
                     Studio Pass (₹499/mo)
                   </Link>
@@ -300,11 +300,11 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Right: Starburst Badges & Massive Portfolia-Style Stats */}
-            <div className="flex flex-col items-start lg:items-end gap-5 pt-4 lg:pt-0 border-t lg:border-t-0 border-neutral-200/80 dark:border-neutral-800">
+            {/* Right: Starburst Badges & Portfolia Stats */}
+            <div className="flex flex-col items-start lg:items-end gap-3 sm:gap-5 pt-4 lg:pt-0 border-t lg:border-t-0 border-neutral-200/80 dark:border-neutral-800 w-full lg:w-auto">
               
               {/* 3 Colorful Starburst/Scallop Badges */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3">
                 <div title="26-Day Streak">
                   <StarburstBadge number="26" color="orange" />
                 </div>
@@ -316,33 +316,33 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Numerical Stats Row */}
-              <div className="flex items-center gap-8 sm:gap-10">
-                <div className="space-y-0.5 text-left lg:text-right">
-                  <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+              {/* Numerical Stats Row (Mobile 3-column grid) */}
+              <div className="grid grid-cols-3 gap-2 sm:flex sm:gap-10 w-full sm:w-auto">
+                <div className="p-2 sm:p-0 rounded-xl bg-white/60 dark:bg-neutral-900/60 sm:bg-transparent border border-neutral-200/60 dark:border-neutral-800 sm:border-0 space-y-0.5 text-center sm:text-left lg:text-right">
+                  <span className="text-[10px] sm:text-xs font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider block">
                     Practiced
                   </span>
-                  <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-sans">
+                  <div className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-sans">
                     2,985
                   </div>
                   <span className="text-[10px] text-neutral-400 block font-mono">mins</span>
                 </div>
 
-                <div className="space-y-0.5 text-left lg:text-right">
-                  <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
-                    Steps Drilled
+                <div className="p-2 sm:p-0 rounded-xl bg-white/60 dark:bg-neutral-900/60 sm:bg-transparent border border-neutral-200/60 dark:border-neutral-800 sm:border-0 space-y-0.5 text-center sm:text-left lg:text-right">
+                  <span className="text-[10px] sm:text-xs font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider block">
+                    Drilled
                   </span>
-                  <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-sans">
+                  <div className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-sans">
                     132
                   </div>
                   <span className="text-[10px] text-neutral-400 block font-mono">measures</span>
                 </div>
 
-                <div className="space-y-0.5 text-left lg:text-right">
-                  <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+                <div className="p-2 sm:p-0 rounded-xl bg-white/60 dark:bg-neutral-900/60 sm:bg-transparent border border-neutral-200/60 dark:border-neutral-800 sm:border-0 space-y-0.5 text-center sm:text-left lg:text-right">
+                  <span className="text-[10px] sm:text-xs font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider block">
                     Mastered
                   </span>
-                  <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-sans">
+                  <div className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-sans">
                     548
                   </div>
                   <span className="text-[10px] text-neutral-400 block font-mono">beats</span>

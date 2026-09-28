@@ -2,6 +2,15 @@ import { DanceCategory } from "@/types";
 
 export const DANCE_CATEGORIES: DanceCategory[] = [
   {
+    id: "traditional",
+    name: "Traditional Dance",
+    slug: "traditional",
+    tagline: "Classical mudras, cultural folk & timeless heritage",
+    description: "Authentic cultural routines, classical footwork patterns, and expressive storytelling.",
+    coverImage: "/categories/traditional.jpg",
+    sampleSongs: ["Ghoomar", "Albela Sajan", "Nagada Sang Dhol"]
+  },
+  {
     id: "bollywood",
     name: "Bollywood",
     slug: "bollywood",
@@ -9,15 +18,6 @@ export const DANCE_CATEGORIES: DanceCategory[] = [
     description: "High-energy cinema choreography from trending releases and all-time classics.",
     coverImage: "/categories/bollywood.jpg",
     sampleSongs: ["Tauba Tauba", "Chaleya", "Ghungroo"]
-  },
-  {
-    id: "traditional",
-    name: "Traditional Dance Videos",
-    slug: "traditional",
-    tagline: "Classical mudras, cultural folk & timeless heritage",
-    description: "Authentic cultural routines, classical footwork patterns, and expressive storytelling.",
-    coverImage: "/categories/traditional.jpg",
-    sampleSongs: ["Ghoomar", "Albela Sajan", "Nagada Sang Dhol"]
   },
   {
     id: "rajasthani",

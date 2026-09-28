@@ -134,11 +134,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl bg-white dark:bg-[#161618] border border-neutral-200/90 dark:border-neutral-800/90 rounded-3xl sm:rounded-[26px] shadow-2xl shadow-black/20 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh] sm:max-h-[82vh]"
+        className="w-full max-w-2xl bg-white dark:bg-[#16161B] border border-neutral-200/80 dark:border-white/[0.08] rounded-3xl sm:rounded-[26px] shadow-2xl shadow-black/20 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh] sm:max-h-[82vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Header Bar */}
-        <div className="relative flex items-center px-4 sm:px-5 py-3 sm:py-3.5 border-b border-neutral-100 dark:border-neutral-800/80 gap-2.5 sm:gap-3">
+        <div className="relative flex items-center px-4 sm:px-5 py-3 sm:py-3.5 border-b border-neutral-100 dark:border-white/[0.06] gap-2.5 sm:gap-3">
           <Search className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-500 shrink-0" />
           <input
             ref={inputRef}
@@ -146,7 +146,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search song, style, or creator..."
-            className="w-full bg-transparent text-base text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 outline-none font-medium"
+            className="w-full bg-transparent text-base text-neutral-900 dark:text-[#EDEDF0] placeholder-neutral-400 dark:placeholder-neutral-500 outline-none font-medium"
           />
           {query ? (
             <button
@@ -158,7 +158,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-medium text-neutral-400 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md">
+            <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-medium text-neutral-400 bg-neutral-100 dark:bg-white/10 border border-neutral-200 dark:border-white/10 rounded-md">
               ESC
             </kbd>
           )}
@@ -171,7 +171,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         </div>
 
         {/* Quick Filter Bar */}
-        <div className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 bg-neutral-50/70 dark:bg-neutral-900/40 border-b border-neutral-100 dark:border-neutral-800/60 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 bg-neutral-50/70 dark:bg-[#1D1D24] border-b border-neutral-100 dark:border-white/[0.06] overflow-x-auto scrollbar-none">
           <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 mr-0.5 shrink-0 hidden xs:inline">
             Filters:
           </span>

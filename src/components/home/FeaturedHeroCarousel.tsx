@@ -144,20 +144,12 @@ export function FeaturedHeroCarousel({ routines }: FeaturedHeroCarouselProps) {
 
                 {/* Bottom: Choreographer Lockup & Action Buttons */}
                 <div className="space-y-2.5 pt-2.5 border-t border-neutral-800/60">
-                  <div className="flex items-center gap-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={routine.creatorAvatar}
-                      alt={routine.creator}
-                      className="w-7 h-7 rounded-full object-cover ring-1 ring-orange-500/40 shrink-0"
-                    />
-                    <div className="min-w-0 flex items-center gap-1.5 text-xs text-neutral-300 truncate">
-                      <span className="font-semibold text-white truncate">{routine.creator}</span>
-                      <span className="text-neutral-600">•</span>
-                      <span className="text-[11px] text-neutral-400 font-mono shrink-0">{routine.steps.length} Steps</span>
-                      <span className="text-neutral-600">•</span>
-                      <span className="text-[11px] text-neutral-400 font-mono shrink-0">{routine.bpm} BPM</span>
-                    </div>
+                  <div className="flex items-center gap-2 text-xs text-neutral-300">
+                    <span className="font-semibold text-white">{routine.steps.length} Steps</span>
+                    <span className="text-neutral-600">•</span>
+                    <span className="text-[11px] text-neutral-400 font-mono">{routine.durationMinutes}</span>
+                    <span className="text-neutral-600">•</span>
+                    <span className="text-[11px] text-neutral-400 font-mono">{routine.bpm} BPM</span>
                   </div>
 
                   <div className="flex items-center gap-2">

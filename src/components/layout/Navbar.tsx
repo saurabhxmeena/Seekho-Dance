@@ -58,8 +58,8 @@ export function Navbar() {
         className={cn(
           "sticky top-0 z-40 w-full transition-all duration-300",
           isScrolled
-            ? "bg-[#FAFAF8]/75 dark:bg-[#0a0a0a]/75 backdrop-blur-xl border-b border-neutral-200/50 dark:border-neutral-800/50 shadow-xs"
-            : "bg-[#FAFAF8]/40 dark:bg-[#0a0a0a]/40 backdrop-blur-xs border-b border-transparent"
+            ? "bg-[#FAFAF8]/80 dark:bg-[#0D0D11]/80 backdrop-blur-xl border-b border-neutral-200/60 dark:border-white/[0.06] shadow-xs"
+            : "bg-[#FAFAF8]/40 dark:bg-[#0D0D11]/40 backdrop-blur-xs border-b border-transparent"
         )}
       >
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-15 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
@@ -84,7 +84,7 @@ export function Navbar() {
                 {/* Live Activity Pulsing Orb */}
                 <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-600 border border-white dark:border-[#0a0a0a]" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-600 border border-white dark:border-[#0D0D11]" />
                 </span>
               </div>
 
@@ -140,16 +140,16 @@ export function Navbar() {
               </kbd>
             </button>
 
-            {/* Light / Dark Mode Toggle (Desktop only, mobile accesses via hamburger drawer) */}
-            <div className="hidden sm:flex items-center">
+            {/* Light / Dark Mode Toggle */}
+            <div className="flex items-center">
               <ThemeToggle className="shrink-0" />
             </div>
 
-            {/* Profile Avatar Pill Button */}
+            {/* Profile Avatar Pill Button (Desktop only; on mobile, Profile is located in the bottom navigation bar) */}
             <Link
               href="/profile"
               className={cn(
-                "flex items-center gap-2 p-0.5 sm:p-1 sm:pl-1 sm:pr-3 rounded-full border transition-all duration-200 group shadow-2xs backdrop-blur-xs active:scale-95 shrink-0",
+                "hidden sm:flex items-center gap-2 p-0.5 sm:p-1 sm:pl-1 sm:pr-3 rounded-full border transition-all duration-200 group shadow-2xs backdrop-blur-xs active:scale-95 shrink-0",
                 pathname === "/profile"
                   ? "bg-orange-50 dark:bg-orange-950/40 border-orange-500/40 dark:border-orange-500/40"
                   : "bg-white/80 dark:bg-neutral-900/80 hover:bg-neutral-100 dark:hover:bg-neutral-800 border-neutral-200/80 dark:border-neutral-800"
@@ -180,41 +180,28 @@ export function Navbar() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-neutral-200/80 dark:border-neutral-800/80 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-150 shadow-xl">
             <div className="space-y-1">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition",
-                      isActive
-                        ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-950 dark:text-white font-semibold"
-                        : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
-                    )}
-                  >
-                    <Icon className="w-4 h-4 text-neutral-400" />
-                    <span>{link.name}</span>
-                  </Link>
-                );
-              })}
-
-              {/* Profile Link in Drawer */}
-              <Link
-                href="/profile"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition",
-                  pathname === "/profile"
-                    ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-950 dark:text-white font-semibold"
-                    : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
-                )}
-              >
-                <User className="w-4 h-4 text-neutral-400" />
-                <span>My Profile & Progress</span>
-              </Link>
+              {navLinks
+                .filter((link) => link.name !== "Library")
+                .map((link) => {
+                  const Icon = link.icon;
+                  const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition",
+                        isActive
+                          ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-950 dark:text-white font-semibold"
+                          : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
+                      )}
+                    >
+                      <Icon className="w-4 h-4 text-neutral-400" />
+                      <span>{link.name}</span>
+                    </Link>
+                  );
+                })}
             </div>
 
             {/* Theme Switcher in Drawer */}

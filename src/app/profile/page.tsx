@@ -180,10 +180,10 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 transition-colors duration-200">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0]">
       
       {/* 1. PORTFOLIA-INSPIRED HERO BANNER WITH AURORA GRADIENT */}
-      <div className="relative w-full bg-gradient-to-b from-neutral-100 via-[#FAFAF8] to-[#FAFAF8] dark:from-[#141419] dark:via-[#0a0a0a] dark:to-[#0a0a0a] pt-6 sm:pt-10 pb-8 sm:pb-12 border-b border-neutral-200/60 dark:border-neutral-800/60">
+      <div className="relative w-full bg-gradient-to-b from-neutral-100 via-[#FAFAF8] to-[#FAFAF8] dark:from-[#141419] dark:via-[#0D0D11] dark:to-[#0D0D11] pt-6 sm:pt-10 pb-8 sm:pb-12 border-b border-neutral-200/60 dark:border-white/[0.06]">
         
         {/* Soft Ethereal Aurora Mesh Glow */}
         <div className="absolute top-0 inset-x-0 h-48 sm:h-64 overflow-hidden pointer-events-none">

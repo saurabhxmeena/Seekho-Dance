@@ -53,7 +53,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-50/50 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400 text-xs transition-colors">
+    <footer className="border-t border-neutral-200/70 dark:border-white/[0.06] bg-neutral-50/60 dark:bg-[#0A0A0D] text-neutral-600 dark:text-[#8E8E98] text-xs">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
         
         {/* Main Row: Brand & Clickable Social Media Links */}

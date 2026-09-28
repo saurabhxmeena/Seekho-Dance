@@ -35,10 +35,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
 
     setResolvedTheme(effective);
-    if (effective === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+
+    if (typeof document !== "undefined") {
+      if (effective === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
   };
 

@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FAFAF8" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: dark)", color: "#0D0D11" },
   ],
 };
 
@@ -55,7 +55,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased preload`}
     >
       <head>
         <script
@@ -70,13 +70,16 @@ export default function RootLayout({
                   } else {
                     document.documentElement.classList.remove('dark');
                   }
+                  setTimeout(function() {
+                    document.documentElement.classList.remove('preload');
+                  }, 0);
                 } catch (e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 selection:bg-orange-500 selection:text-white font-sans transition-colors duration-200 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0">
+      <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] selection:bg-orange-500 selection:text-white font-sans pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0">
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

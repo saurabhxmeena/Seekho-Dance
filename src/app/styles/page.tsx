@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function StylesPage() {
   return (
-    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 transition-colors">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0]">
       <div className="max-w-6xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6 sm:py-16 space-y-6 sm:space-y-12">
         
         {/* Header */}
@@ -18,42 +18,42 @@ export default function StylesPage() {
           <span className="text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">
             Dance Categories
           </span>
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-950 dark:text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-950 dark:text-[#EDEDF0]">
             Dance Styles
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs sm:text-sm text-neutral-500 dark:text-[#9494A0]">
             Choose your preferred style and master verified step-by-step choreographies.
           </p>
         </div>
 
-        {/* Styles Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {/* Styles Grid - 2 at a time on mobile: Traditional Dance (left), Bollywood (right) */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
           {DANCE_CATEGORIES.map((category) => (
             <Link
               key={category.id}
               href={`/explore?style=${encodeURIComponent(category.name)}`}
-              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[16/10] sm:aspect-[16/11] bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex flex-col justify-end p-5 sm:p-6 hover:shadow-xl hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300 active:scale-98 touch-manipulation"
+              className="group relative rounded-xl sm:rounded-3xl overflow-hidden aspect-[16/12] sm:aspect-[16/11] bg-neutral-900 border border-neutral-200/70 dark:border-white/[0.08] flex flex-col justify-end p-2.5 sm:p-6 hover:shadow-xl hover:border-neutral-400 dark:hover:border-white/20 transition-all duration-300 active:scale-98 touch-manipulation"
             >
               {/* Background Image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={category.coverImage}
                 alt={category.name}
-                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-500"
+                className="absolute inset-0 w-full h-full object-cover opacity-65 group-hover:scale-105 group-hover:opacity-80 transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent" />
 
               {/* Minimal Content */}
-              <div className="relative z-10 space-y-1">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+              <div className="relative z-10 space-y-0.5 sm:space-y-1">
+                <div className="flex items-center justify-between gap-1 sm:gap-2">
+                  <h3 className="text-xs sm:text-xl font-bold text-white tracking-tight line-clamp-1">
                     {category.name}
                   </h3>
-                  <div className="w-7 h-7 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="hidden sm:flex w-7 h-7 rounded-full bg-white/10 backdrop-blur-md items-center justify-center text-white opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
-                <p className="text-xs text-neutral-300 line-clamp-1">
+                <p className="text-[10px] sm:text-xs text-neutral-300 line-clamp-1">
                   {category.tagline}
                 </p>
               </div>

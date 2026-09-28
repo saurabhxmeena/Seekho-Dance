@@ -85,10 +85,10 @@ export default function DanceLearningPage({ params }: DancePageProps) {
   ).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-50 transition-colors">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0]">
       
       {/* Studio Header Bar */}
-      <div className="border-b border-neutral-200/60 dark:border-neutral-800/60 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md sticky top-15 sm:top-16 z-30 transition-colors">
+      <div className="border-b border-neutral-200/60 dark:border-white/[0.06] bg-white/80 dark:bg-[#16161B]/80 backdrop-blur-md sticky top-15 sm:top-16 z-30">
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2.5">
           
           {/* Back link & Song title */}

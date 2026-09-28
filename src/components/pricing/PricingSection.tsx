@@ -126,16 +126,16 @@ export function PricingSection({ className }: PricingSectionProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto mb-10 sm:mb-14 items-stretch">
         
         {/* Plan 1: Monthly Subscription */}
-        <div className="rounded-2xl sm:rounded-3xl bg-neutral-100/70 dark:bg-[#1C1C1E] border border-neutral-200/80 dark:border-neutral-800 p-5 sm:p-8 flex flex-col justify-between shadow-xs">
+        <div className="rounded-2xl sm:rounded-3xl bg-neutral-100/70 dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] p-5 sm:p-8 flex flex-col justify-between shadow-xs">
           <div className="space-y-4 sm:space-y-5">
             <div className="space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-[#9494A0]">
                 Subscription
               </span>
-              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 dark:text-[#EDEDF0]">
                 Monthly Pass
               </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-neutral-500 dark:text-[#9494A0]">
                 Continuous access to all choreographies.
               </p>
             </div>
@@ -166,14 +166,14 @@ export function PricingSection({ className }: PricingSectionProps) {
             </div>
 
             {/* Feature List */}
-            <div className="pt-3.5 border-t border-neutral-200/80 dark:border-neutral-800 space-y-2.5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-neutral-200">
+            <div className="pt-3.5 border-t border-neutral-200/70 dark:border-white/[0.07] space-y-2.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-[#EDEDF0]">
                 Includes:
               </p>
-              <ul className="space-y-2 text-xs text-neutral-600 dark:text-neutral-300">
+              <ul className="space-y-2 text-xs text-neutral-600 dark:text-[#A1A1AA]">
                 {perksMonthly.map((perk, idx) => (
                   <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-950 dark:text-white shrink-0 mt-0.5 stroke-[2.5]" />
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-950 dark:text-[#EDEDF0] shrink-0 mt-0.5 stroke-[2.5]" />
                     <span>{perk}</span>
                   </li>
                 ))}
@@ -187,16 +187,16 @@ export function PricingSection({ className }: PricingSectionProps) {
         </div>
 
         {/* Plan 2: 1-Month One-Time Pass */}
-        <div className="rounded-2xl sm:rounded-3xl bg-neutral-100/70 dark:bg-[#1C1C1E] border border-neutral-200/80 dark:border-neutral-800 p-5 sm:p-8 flex flex-col justify-between shadow-xs">
+        <div className="rounded-2xl sm:rounded-3xl bg-neutral-100/70 dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] p-5 sm:p-8 flex flex-col justify-between shadow-xs">
           <div className="space-y-4 sm:space-y-5">
             <div className="space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-[#9494A0]">
                 One-Time Payment
               </span>
-              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 dark:text-[#EDEDF0]">
                 1-Month Pass
               </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-neutral-500 dark:text-[#9494A0]">
                 Full studio access for 30 days. No recurring charges.
               </p>
             </div>
@@ -227,14 +227,14 @@ export function PricingSection({ className }: PricingSectionProps) {
             </div>
 
             {/* Feature List */}
-            <div className="pt-3.5 border-t border-neutral-200/80 dark:border-neutral-800 space-y-2.5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-neutral-200">
+            <div className="pt-3.5 border-t border-neutral-200/70 dark:border-white/[0.07] space-y-2.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-[#EDEDF0]">
                 Includes:
               </p>
-              <ul className="space-y-2 text-xs text-neutral-600 dark:text-neutral-300">
+              <ul className="space-y-2 text-xs text-neutral-600 dark:text-[#A1A1AA]">
                 {perksOneTime.map((perk, idx) => (
                   <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-950 dark:text-white shrink-0 mt-0.5 stroke-[2.5]" />
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-950 dark:text-[#EDEDF0] shrink-0 mt-0.5 stroke-[2.5]" />
                     <span>{perk}</span>
                   </li>
                 ))}
@@ -261,12 +261,12 @@ export function PricingSection({ className }: PricingSectionProps) {
         </div>
 
         {/* Responsive Grid Table */}
-        <div className="rounded-2xl sm:rounded-3xl bg-neutral-100/60 dark:bg-[#1C1C1E] border border-neutral-200/80 dark:border-neutral-800 overflow-hidden shadow-xs">
+        <div className="rounded-2xl sm:rounded-3xl bg-neutral-100/60 dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] overflow-hidden shadow-xs">
           {/* Table Header */}
-          <div className="grid grid-cols-12 px-3 sm:px-6 py-3 sm:py-4 border-b border-neutral-200/80 dark:border-neutral-800 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+          <div className="grid grid-cols-12 px-3 sm:px-6 py-3 sm:py-4 border-b border-neutral-200/70 dark:border-white/[0.08] text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-[#9494A0]">
             <div className="col-span-6 sm:col-span-6">Features</div>
             <div className="col-span-3 sm:col-span-3 text-center">Free</div>
-            <div className="col-span-3 sm:col-span-3 text-center text-neutral-950 dark:text-white">Monthly (₹499)</div>
+            <div className="col-span-3 sm:col-span-3 text-center text-neutral-950 dark:text-[#EDEDF0]">Monthly (₹499)</div>
           </div>
 
           {/* Table Rows */}
@@ -320,7 +320,7 @@ export function PricingSection({ className }: PricingSectionProps) {
           </p>
         </div>
 
-        <div className="divide-y divide-neutral-200 dark:divide-neutral-800 border-t border-b border-neutral-200 dark:border-neutral-800">
+        <div className="divide-y divide-neutral-200/70 dark:divide-white/[0.06] border-t border-b border-neutral-200/70 dark:border-white/[0.06]">
           {faqs.map((faq, index) => {
             const isOpen = openFaq === index;
             return (
@@ -334,24 +334,26 @@ export function PricingSection({ className }: PricingSectionProps) {
                     {faq.q}
                   </span>
                   <div className={cn(
-                    "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0 transition-all",
+                    "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300",
                     isOpen 
                       ? "bg-orange-500/10 text-orange-600 dark:text-orange-400" 
                       : "bg-neutral-100 dark:bg-neutral-800 text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200"
                   )}>
                     <ChevronDown
                       className={cn(
-                        "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-200",
+                        "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 ease-out",
                         isOpen && "rotate-180"
                       )}
                     />
                   </div>
                 </button>
-                {isOpen && (
-                  <div className="pt-2.5 pr-4 sm:pr-10 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed animate-in fade-in duration-200">
-                    {faq.a}
+                <div className={cn("accordion-grid", isOpen && "open")}>
+                  <div className="accordion-inner">
+                    <div className="pt-2.5 pr-4 sm:pr-10 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                      {faq.a}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}

@@ -177,6 +177,9 @@ class AuthService {
   }
 
   private ensureSupabase() {
+    if (!this.supabase && typeof window !== "undefined") {
+      this.supabase = createSupabaseClient();
+    }
     if (!this.supabase) {
       throw new Error("Supabase is not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
     }

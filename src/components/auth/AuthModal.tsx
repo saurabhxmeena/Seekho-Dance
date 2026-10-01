@@ -59,6 +59,7 @@ export function AuthModal() {
     sendEmailOtp,
     verifyEmailOtp,
     signInWithEmail,
+    signUp,
     updatePassword,
     resetPasswordForEmail,
   } = useAuth();
@@ -74,6 +75,7 @@ export function AuthModal() {
   const [otpError, setOtpError] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [emailFlowMode, setEmailFlowMode] = useState<"otp" | "signin">("otp");
+  const [passwordMode, setPasswordMode] = useState<"signin" | "signup">("signin");
   const [, setIsNewEmailUser] = useState(false);
 
   // Resend cooldown timer
@@ -139,7 +141,7 @@ export function AuthModal() {
       case "create-password":
         return "Create a password";
       case "sign-in":
-        return "Welcome back";
+        return passwordMode === "signin" ? "Welcome back" : "Create password";
       case "forgot-password":
         return "Reset your password";
       case "success":
@@ -160,7 +162,9 @@ export function AuthModal() {
       case "create-password":
         return "Set a secure password for your account";
       case "sign-in":
-        return `Sign in to ${pendingEmail || email}`;
+        return passwordMode === "signin"
+          ? `Sign in to ${pendingEmail || email}`
+          : `Set a password for ${pendingEmail || email}`;
       case "forgot-password":
         return "We'll send you a link to reset your password";
       case "success":
@@ -236,17 +240,27 @@ export function AuthModal() {
     }
   };
 
-  const handlePasswordSignIn = async (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) {
       setErrorMessage("Please enter your password.");
       return;
     }
+    const targetEmail = pendingEmail || email;
     try {
       setErrorMessage(null);
-      await signInWithEmail(pendingEmail || email, password);
+      if (passwordMode === "signin") {
+        await signInWithEmail(targetEmail, password);
+      } else {
+        if (password.length < 8) {
+          setErrorMessage("Password must be at least 8 characters.");
+          return;
+        }
+        await signUp(targetEmail, password);
+        setSuccessMessage("Account created! Welcome to Seekho Dance.");
+      }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Sign in failed.";
+      const message = err instanceof Error ? err.message : "Authentication failed.";
       setErrorMessage(message);
     }
   };
@@ -559,21 +573,57 @@ export function AuthModal() {
             </div>
           )}
 
-          {/* ═══ STEP: Password Sign In ═══ */}
+          {/* ═══ STEP: Password Sign In / Sign Up ═══ */}
           {authStep === "sign-in" && (
-            <form onSubmit={handlePasswordSignIn} className="space-y-4">
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              {/* Mode Toggle: Sign In vs New Account */}
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPasswordMode("signin");
+                    setErrorMessage(null);
+                  }}
+                  className={cn(
+                    "flex-1 py-1.5 rounded-lg text-xs font-semibold text-center transition",
+                    passwordMode === "signin"
+                      ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-2xs"
+                      : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  )}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPasswordMode("signup");
+                    setErrorMessage(null);
+                  }}
+                  className={cn(
+                    "flex-1 py-1.5 rounded-lg text-xs font-semibold text-center transition",
+                    passwordMode === "signup"
+                      ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-2xs"
+                      : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  )}
+                >
+                  New Account
+                </button>
+              </div>
+
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-[11px] font-semibold text-neutral-600 dark:text-neutral-400">
-                    Password
+                    {passwordMode === "signin" ? "Password" : "Create Password (min 8 characters)"}
                   </label>
-                  <button
-                    type="button"
-                    onClick={() => setAuthStep("forgot-password")}
-                    className="text-[10px] text-orange-600 dark:text-orange-400 hover:underline font-semibold"
-                  >
-                    Forgot password?
-                  </button>
+                  {passwordMode === "signin" && (
+                    <button
+                      type="button"
+                      onClick={() => setAuthStep("forgot-password")}
+                      className="text-[10px] text-orange-600 dark:text-orange-400 hover:underline font-semibold"
+                    >
+                      Forgot password?
+                    </button>
+                  )}
                 </div>
                 <div className="relative">
                   <KeyRound className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -584,7 +634,7 @@ export function AuthModal() {
                     placeholder="••••••••"
                     required
                     autoFocus
-                    autoComplete="current-password"
+                    autoComplete={passwordMode === "signin" ? "current-password" : "new-password"}
                     className="w-full pl-10 pr-10 py-3 rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition"
                     disabled={isLoading}
                   />
@@ -599,18 +649,22 @@ export function AuthModal() {
                 </div>
               </div>
 
+              {passwordMode === "signup" && password && (
+                <PasswordStrength password={password} />
+              )}
+
               <button
                 type="submit"
-                disabled={isLoading || !password}
+                disabled={isLoading || !password || (passwordMode === "signup" && password.length < 8)}
                 className="w-full py-3 px-4 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition active:scale-[0.98] shadow-sm cursor-pointer disabled:opacity-50"
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Signing in...</span>
+                    <span>{passwordMode === "signin" ? "Signing in..." : "Creating account..."}</span>
                   </>
                 ) : (
-                  <span>Sign In</span>
+                  <span>{passwordMode === "signin" ? "Sign In" : "Create Account & Continue"}</span>
                 )}
               </button>
 
@@ -621,7 +675,7 @@ export function AuthModal() {
                   onClick={() => {
                     setEmailFlowMode("otp");
                     setAuthStep("email-input");
-                    setEmail(pendingEmail);
+                    setEmail(pendingEmail || email);
                   }}
                   className="text-[11px] text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
                 >

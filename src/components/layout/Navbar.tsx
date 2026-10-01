@@ -4,20 +4,24 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, Compass, Layers, User, Sparkles, Tag, Home } from "lucide-react";
+import { Search, Menu, X, Compass, Layers, User as UserIcon, Sparkles, Tag, Home, LogIn } from "lucide-react";
 import { SearchModal } from "@/components/search/SearchModal";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 import { getUserProfile } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const pathname = usePathname();
+  const { user, isAuthenticated, openAuthModal } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [userName, setUserName] = useState("Seekho Dancer");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -50,7 +54,8 @@ export function Navbar() {
     { name: "Pricing", href: "/pricing", icon: Tag },
   ];
 
-  const userInitials = (userName.slice(0, 2) || "SD").toUpperCase();
+  const displayName = user?.name || userName;
+  const userInitials = (displayName.slice(0, 2) || "SD").toUpperCase();
 
   return (
     <>
@@ -145,25 +150,36 @@ export function Navbar() {
               <ThemeToggle className="shrink-0" />
             </div>
 
-            {/* Profile Avatar Pill Button (Desktop only; on mobile, Profile is located in the bottom navigation bar) */}
-            <Link
-              href="/profile"
-              className={cn(
-                "hidden sm:flex items-center gap-2 p-0.5 sm:p-1 sm:pl-1 sm:pr-3 rounded-full border transition-all duration-200 group shadow-2xs backdrop-blur-xs active:scale-95 shrink-0",
-                pathname === "/profile"
-                  ? "bg-orange-50 dark:bg-orange-950/40 border-orange-500/40 dark:border-orange-500/40"
-                  : "bg-white/80 dark:bg-neutral-900/80 hover:bg-neutral-100 dark:hover:bg-neutral-800 border-neutral-200/80 dark:border-neutral-800"
-              )}
-              title="My Profile & Progress"
-              aria-label="User Profile"
-            >
-              <div className="w-7 h-7 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-400 text-white flex items-center justify-center font-bold text-[11px] shadow-xs ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 transition-transform">
-                {userInitials}
-              </div>
-              <span className="hidden md:inline text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
-                Profile
-              </span>
-            </Link>
+            {/* Profile Avatar Pill Button or Sign In Button (Desktop only; on mobile, Profile is in bottom nav) */}
+            {mounted && (isAuthenticated ? (
+              <Link
+                href="/profile"
+                className={cn(
+                  "hidden sm:flex items-center gap-2 p-0.5 sm:p-1 sm:pl-1 sm:pr-3 rounded-full border transition-all duration-200 group shadow-2xs backdrop-blur-xs active:scale-95 shrink-0",
+                  pathname === "/profile"
+                    ? "bg-orange-50 dark:bg-orange-950/40 border-orange-500/40 dark:border-orange-500/40"
+                    : "bg-white/80 dark:bg-neutral-900/80 hover:bg-neutral-100 dark:hover:bg-neutral-800 border-neutral-200/80 dark:border-neutral-800"
+                )}
+                title="My Profile & Progress"
+                aria-label="User Profile"
+              >
+                <div className="w-7 h-7 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-400 text-white flex items-center justify-center font-bold text-[11px] shadow-xs ring-1 ring-black/5 dark:ring-white/10 group-hover:scale-105 transition-transform">
+                  {userInitials}
+                </div>
+                <span className="hidden md:inline text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors truncate max-w-[90px]">
+                  {displayName.split(" ")[0]}
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => openAuthModal(null, "Sign in to your Seekho Dance account")}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 transition shadow-2xs active:scale-95 shrink-0 cursor-pointer"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </button>
+            ))}
 
             {/* Mobile Navigation Drawer Trigger */}
             <button

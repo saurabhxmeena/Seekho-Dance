@@ -28,6 +28,8 @@ interface StudioPlayerProps {
   playbackSpeed: number;
   onSpeedChange: (speed: number) => void;
   onPlayStateChange?: (isPlaying: boolean) => void;
+  onBeforePlay?: () => boolean;
+  autoPlayTrigger?: boolean;
 }
 
 export function StudioPlayer({
@@ -41,6 +43,8 @@ export function StudioPlayer({
   playbackSpeed,
   onSpeedChange,
   onPlayStateChange,
+  onBeforePlay,
+  autoPlayTrigger,
 }: StudioPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -81,6 +85,16 @@ export function StudioPlayer({
     }
   }, [isLooping, activeStep]);
 
+  // Auto-play trigger when access is granted after login/payment
+  useEffect(() => {
+    if (autoPlayTrigger && videoRef.current && !isPlaying) {
+      videoRef.current.play().then(() => {
+        setIsPlaying(true);
+        onPlayStateChange?.(true);
+      }).catch((e) => console.log("Autoplay error:", e));
+    }
+  }, [autoPlayTrigger, isPlaying, onPlayStateChange]);
+
   const togglePlay = () => {
     if (!videoRef.current) return;
     if (isPlaying) {
@@ -88,6 +102,9 @@ export function StudioPlayer({
       setIsPlaying(false);
       onPlayStateChange?.(false);
     } else {
+      if (onBeforePlay && !onBeforePlay()) {
+        return;
+      }
       videoRef.current.play().then(() => {
         setIsPlaying(true);
         onPlayStateChange?.(true);
@@ -104,13 +121,20 @@ export function StudioPlayer({
   };
 
   const handleStepMarkerClick = (step: DanceStep) => {
+    if (step.stepNumber > 1 && onBeforePlay && !onBeforePlay()) {
+      return;
+    }
     onStepChange(step);
     if (videoRef.current) {
       videoRef.current.currentTime = step.timestampStart;
       if (!isPlaying) {
-        videoRef.current.play();
-        setIsPlaying(true);
-        onPlayStateChange?.(true);
+        if (onBeforePlay && !onBeforePlay()) {
+          return;
+        }
+        videoRef.current.play().then(() => {
+          setIsPlaying(true);
+          onPlayStateChange?.(true);
+        }).catch((e) => console.log("Play error:", e));
       }
     }
   };

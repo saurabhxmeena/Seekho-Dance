@@ -8,6 +8,10 @@ import {
   ArrowRight,
   Minus,
 } from "lucide-react";
+import { UnlockChoreographyModal } from "@/components/payment/UnlockChoreographyModal";
+import { saveUserProfile } from "@/lib/storage";
+import { useAuth } from "@/context/AuthContext";
+import { accessService } from "@/services/accessService";
 import { cn } from "@/lib/utils";
 
 interface PricingSectionProps {
@@ -15,7 +19,24 @@ interface PricingSectionProps {
 }
 
 export function PricingSection({ className }: PricingSectionProps) {
+  const { user, isAuthenticated, openAuthModal } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [selectedPass, setSelectedPass] = useState<{
+    id: string;
+    title: string;
+    price: number;
+  } | null>(null);
+  const [purchasedSuccess, setPurchasedSuccess] = useState(false);
+
+  const handleSelectPass = (pass: { id: string; title: string; price: number }) => {
+    if (!isAuthenticated) {
+      openAuthModal(null, "Sign in to activate your Studio Pass.", () => {
+        setSelectedPass(pass);
+      });
+      return;
+    }
+    setSelectedPass(pass);
+  };
 
   const perksMonthly = [
     "Full access to 100+ viral song choreographies",
@@ -157,12 +178,19 @@ export function PricingSection({ className }: PricingSectionProps) {
 
             {/* CTA Button */}
             <div className="pt-1">
-              <Link
-                href="/dance/tauba-tauba"
-                className="w-full py-3 sm:py-3.5 px-6 rounded-full text-xs sm:text-sm font-semibold bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-950 flex items-center justify-center gap-2 transition active:scale-95 text-center shadow-xs touch-manipulation"
+              <button
+                type="button"
+                onClick={() =>
+                  handleSelectPass({
+                    id: "pass-monthly",
+                    title: "Seekho Studio Monthly Pass",
+                    price: 499,
+                  })
+                }
+                className="w-full py-3 sm:py-3.5 px-6 rounded-full text-xs sm:text-sm font-semibold bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-950 flex items-center justify-center gap-2 transition active:scale-95 text-center shadow-xs touch-manipulation cursor-pointer"
               >
                 <span>Get Monthly Pass</span>
-              </Link>
+              </button>
             </div>
 
             {/* Feature List */}
@@ -218,12 +246,19 @@ export function PricingSection({ className }: PricingSectionProps) {
 
             {/* CTA Button */}
             <div className="pt-1">
-              <Link
-                href="/dance/tauba-tauba"
-                className="w-full py-3 sm:py-3.5 px-6 rounded-full text-xs sm:text-sm font-semibold bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white flex items-center justify-center gap-2 transition active:scale-95 text-center touch-manipulation"
+              <button
+                type="button"
+                onClick={() =>
+                  handleSelectPass({
+                    id: "pass-onetime",
+                    title: "Seekho Studio 1-Month Pass",
+                    price: 799,
+                  })
+                }
+                className="w-full py-3 sm:py-3.5 px-6 rounded-full text-xs sm:text-sm font-semibold bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white flex items-center justify-center gap-2 transition active:scale-95 text-center touch-manipulation cursor-pointer"
               >
                 <span>Buy 1-Month Pass</span>
-              </Link>
+              </button>
             </div>
 
             {/* Feature List */}
@@ -369,6 +404,23 @@ export function PricingSection({ className }: PricingSectionProps) {
         </div>
       </div>
 
+      {/* Razorpay Checkout Modal for Memberships */}
+      {selectedPass && (
+        <UnlockChoreographyModal
+          isOpen={Boolean(selectedPass)}
+          onClose={() => setSelectedPass(null)}
+          courseId={selectedPass.id}
+          courseTitle={selectedPass.title}
+          price={selectedPass.price}
+          onSuccess={() => {
+            const uid = user?.id || user?.email || "dancer@seekhodance.com";
+            accessService.grantAccess(uid, selectedPass.id);
+            saveUserProfile({ plan: "Studio Pass" });
+            setPurchasedSuccess(true);
+            setSelectedPass(null);
+          }}
+        />
+      )}
     </section>
   );
 }

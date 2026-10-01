@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, useCallback, use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -8,6 +8,8 @@ import {
   Share2,
   CheckCircle,
   ExternalLink,
+  Sparkles,
+  Lock,
 } from "lucide-react";
 import { DANCE_ROUTINES } from "@/data/dances";
 import { DanceStep } from "@/types";
@@ -17,6 +19,10 @@ import { StepLessonList } from "@/components/studio/StepLessonList";
 import { PracticeControls } from "@/components/studio/PracticeControls";
 import { CountSheet } from "@/components/studio/CountSheet";
 import { DanceCard } from "@/components/discovery/DanceCard";
+import { ContextualPaywallModal } from "@/components/payment/ContextualPaywallModal";
+import { useAuth } from "@/context/AuthContext";
+import { accessService } from "@/services/accessService";
+import { authService } from "@/services/authService";
 import { cn } from "@/lib/utils";
 
 interface DancePageProps {
@@ -31,6 +37,15 @@ export default function DanceLearningPage({ params }: DancePageProps) {
     notFound();
   }
 
+  const { user, isAuthenticated, openAuthModal } = useAuth();
+
+  // Access & Payment State
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
+  const [isFreeRoutine, setIsFreeRoutine] = useState<boolean>(false);
+  const [coursePrice, setCoursePrice] = useState<number>(299);
+  const [isPaywallOpen, setIsPaywallOpen] = useState<boolean>(false);
+  const [autoPlayTrigger, setAutoPlayTrigger] = useState<boolean>(false);
+
   // Studio Player State
   const [activeStep, setActiveStep] = useState<DanceStep>(routine.steps[0]);
   const [completedStepIds, setCompletedStepIds] = useState<string[]>([]);
@@ -39,6 +54,89 @@ export default function DanceLearningPage({ params }: DancePageProps) {
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [copiedToast, setCopiedToast] = useState<boolean>(false);
+
+  // Verify access with accessService
+  useEffect(() => {
+    if (!routine) return;
+    const routineId = routine.id;
+
+    async function verifyAccess() {
+      try {
+        const userId = user?.id || user?.email || null;
+        const result = await accessService.checkAccess(userId, routineId);
+        setHasAccess(result.hasAccess);
+        setIsFreeRoutine(result.isFree);
+        if (result.price) {
+          setCoursePrice(result.price);
+        }
+      } catch (err) {
+        console.error("Failed to check course access status:", err);
+      }
+    }
+
+    verifyAccess();
+
+    const unsub = accessService.onAccessChange(() => {
+      verifyAccess();
+    });
+
+    return () => unsub();
+  }, [routine, user, isAuthenticated]);
+
+  // Video Playback Access Gate Logic (Requirement 6, 7, 8, 9, 12)
+  // IF user is logged out -> Open authentication
+  // IF user is logged in but does not have access -> Show existing Pricing section
+  // IF user is logged in and has access -> Play video
+  const checkAccessAndProceed = useCallback((): boolean => {
+    if (isFreeRoutine) {
+      return true;
+    }
+
+    // State A: Logged out
+    if (!isAuthenticated) {
+      openAuthModal(
+        {
+          id: routine.id,
+          title: routine.title,
+          coverImage: routine.coverImage,
+          artist: routine.artist,
+        },
+        "Sign in to continue watching.",
+        () => {
+          // Callback after authentication succeeds: check access!
+          const currentUser = authService.getCurrentUser();
+          const userId = currentUser?.id || currentUser?.email || null;
+          accessService.checkAccess(userId, routine.id).then((result) => {
+            if (result.hasAccess) {
+              setHasAccess(true);
+              setAutoPlayTrigger(true);
+            } else {
+              setHasAccess(false);
+              setIsPaywallOpen(true);
+            }
+          });
+        }
+      );
+      return false;
+    }
+
+    // State B: Logged in, unpaid
+    if (!hasAccess) {
+      setIsPaywallOpen(true);
+      return false;
+    }
+
+    // State C: Logged in, paid
+    return true;
+  }, [isFreeRoutine, isAuthenticated, hasAccess, openAuthModal, routine]);
+
+  const handleUnlockRequest = () => {
+    if (!isAuthenticated) {
+      checkAccessAndProceed();
+    } else {
+      setIsPaywallOpen(true);
+    }
+  };
 
   // Studio Mobile Tab State: "steps" | "rhythm" | "notes"
   const [mobileStudioTab, setMobileStudioTab] = useState<"steps" | "rhythm" | "notes">("steps");
@@ -50,10 +148,16 @@ export default function DanceLearningPage({ params }: DancePageProps) {
   };
 
   const handleStepSelect = (step: DanceStep) => {
+    if (!hasAccess && !isFreeRoutine && step.stepNumber > 1) {
+      if (!checkAccessAndProceed()) return;
+    }
     setActiveStep(step);
   };
 
   const handlePracticeStep = (step: DanceStep) => {
+    if (!hasAccess && !isFreeRoutine && step.stepNumber > 1) {
+      if (!checkAccessAndProceed()) return;
+    }
     setActiveStep(step);
     setIsLooping(true);
   };
@@ -66,6 +170,9 @@ export default function DanceLearningPage({ params }: DancePageProps) {
   };
 
   const handleNextStep = () => {
+    if (!hasAccess && !isFreeRoutine && activeStep.stepNumber >= 1) {
+      if (!checkAccessAndProceed()) return;
+    }
     const currentIndex = routine.steps.findIndex((s) => s.id === activeStep.id);
     if (currentIndex < routine.steps.length - 1) {
       setActiveStep(routine.steps[currentIndex + 1]);
@@ -79,6 +186,8 @@ export default function DanceLearningPage({ params }: DancePageProps) {
       setTimeout(() => setCopiedToast(false), 2500);
     }
   };
+
+  const isLocked = !hasAccess && !isFreeRoutine;
 
   const relatedDances = DANCE_ROUTINES.filter(
     (d) => d.id !== routine.id && (d.style === routine.style || d.creator === routine.creator)
@@ -110,6 +219,17 @@ export default function DanceLearningPage({ params }: DancePageProps) {
                 <span className="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                   {routine.style}
                 </span>
+                {isLocked ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 shrink-0">
+                    <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    <span>Step 01 Free • ₹{coursePrice}</span>
+                  </span>
+                ) : (
+                  <span className="hidden xs:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 shrink-0">
+                    <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    <span>Unlocked</span>
+                  </span>
+                )}
               </div>
               <p className="text-[11px] sm:text-xs text-neutral-500 dark:text-neutral-400 truncate">
                 {routine.artist} • By <strong className="text-neutral-700 dark:text-neutral-200">{routine.creator}</strong>
@@ -119,6 +239,17 @@ export default function DanceLearningPage({ params }: DancePageProps) {
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2 shrink-0">
+            {isLocked && (
+              <button
+                type="button"
+                onClick={handleUnlockRequest}
+                className="px-3 sm:px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm shadow-orange-600/25 active:scale-95 shrink-0 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current" />
+                <span>Unlock (₹{coursePrice})</span>
+              </button>
+            )}
+
             <button
               onClick={handleShare}
               className="px-2.5 sm:px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 text-xs font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1.5 transition bg-white dark:bg-neutral-900 shadow-2xs active:scale-95"
@@ -151,6 +282,8 @@ export default function DanceLearningPage({ params }: DancePageProps) {
               playbackSpeed={playbackSpeed}
               onSpeedChange={setPlaybackSpeed}
               onPlayStateChange={setIsPlaying}
+              onBeforePlay={checkAccessAndProceed}
+              autoPlayTrigger={autoPlayTrigger}
             />
 
             {/* 2. Practice Controls Bar (Sticky / Primary) */}
@@ -213,6 +346,9 @@ export default function DanceLearningPage({ params }: DancePageProps) {
                 onSelectStep={handleStepSelect}
                 onToggleCompleteStep={toggleCompleteStep}
                 onPracticeStep={handlePracticeStep}
+                isLocked={isLocked}
+                price={coursePrice}
+                onUnlockRequest={handleUnlockRequest}
               />
             </div>
 
@@ -287,6 +423,9 @@ export default function DanceLearningPage({ params }: DancePageProps) {
               onSelectStep={handleStepSelect}
               onToggleCompleteStep={toggleCompleteStep}
               onPracticeStep={handlePracticeStep}
+              isLocked={isLocked}
+              price={coursePrice}
+              onUnlockRequest={handleUnlockRequest}
             />
 
             {/* Learning Checkpoints Card */}
@@ -337,6 +476,20 @@ export default function DanceLearningPage({ params }: DancePageProps) {
           </div>
         )}
       </div>
+
+      {/* Contextual Paywall Modal (Reuses existing pricing section structure & checkout) */}
+      <ContextualPaywallModal
+        isOpen={isPaywallOpen}
+        onClose={() => setIsPaywallOpen(false)}
+        routineId={routine.id}
+        routineTitle={routine.title}
+        routinePrice={coursePrice}
+        routineCoverImage={routine.coverImage}
+        onSuccess={() => {
+          setHasAccess(true);
+          setAutoPlayTrigger(true);
+        }}
+      />
     </div>
   );
 }

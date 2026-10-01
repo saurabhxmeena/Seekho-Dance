@@ -29,6 +29,10 @@ import { useTheme } from "@/components/theme/ThemeProvider";
 import { getUserProfile, saveUserProfile, getSavedDances, toggleSaveDance, UserProfileData } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
+import { useAuth } from "@/context/AuthContext";
+import { accessService } from "@/services/accessService";
+import { LogOut, LogIn, ShieldCheck, UserCheck } from "lucide-react";
+
 interface InProgressRoutine {
   routineId: string;
   currentStep: number;
@@ -69,18 +73,19 @@ function StarburstBadge({
 
 export default function ProfilePage() {
   const { resolvedTheme, toggleTheme } = useTheme();
+  const { user, isAuthenticated, signOut, openAuthModal, signInWithGoogle } = useAuth();
   const [activeTab, setActiveTab] = useState<"learning" | "mastered" | "saved" | "settings">("learning");
 
   // User profile state
   const [profile, setProfile] = useState<UserProfileData>({
-    name: "Saurabh Meena",
-    email: "dancer@seekhodance.com",
-    plan: "Studio Pass",
+    name: user?.name || "Seekho Dancer",
+    email: user?.email || "dancer@seekhodance.com",
+    plan: "Free Explorer",
     dailyGoalMinutes: 15,
     streakDays: 26,
   });
   const [isEditingName, setIsEditingName] = useState(false);
-  const [nameInput, setNameInput] = useState("Saurabh Meena");
+  const [nameInput, setNameInput] = useState(user?.name || "Seekho Dancer");
 
   // Saved songs state
   const [savedIds, setSavedIds] = useState<string[]>(["chaleya", "natu-natu", "ghungroo"]);
@@ -90,14 +95,31 @@ export default function ProfilePage() {
   const [defaultSpeed, setDefaultSpeed] = useState<"0.5" | "0.75" | "1.0">("0.75");
   const [metronomeSound, setMetronomeSound] = useState(true);
 
+  // Sync user info and access status
   useEffect(() => {
-    const loadedProfile = getUserProfile();
-    if (loadedProfile?.name) {
-      setProfile(loadedProfile);
-      setNameInput(loadedProfile.name);
+    if (user) {
+      const access = accessService.getUserAccess(user.id || user.email);
+      setProfile((prev) => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        plan: access.plan,
+      }));
+      setNameInput(user.name || "Seekho Dancer");
     }
     setSavedIds(getSavedDances());
-  }, []);
+  }, [user, isAuthenticated]);
+
+  // Subscribe to access changes
+  useEffect(() => {
+    const unsub = accessService.onAccessChange(() => {
+      if (user) {
+        const access = accessService.getUserAccess(user.id || user.email);
+        setProfile((prev) => ({ ...prev, plan: access.plan }));
+      }
+    });
+    return () => unsub();
+  }, [user]);
 
   const handleSaveName = () => {
     if (nameInput.trim()) {
@@ -110,6 +132,16 @@ export default function ProfilePage() {
   const handleRemoveSaved = (routineId: string) => {
     toggleSaveDance(routineId);
     setSavedIds(getSavedDances());
+  };
+
+  const handleTogglePlan = (newPlan: "Free Explorer" | "Studio Pass") => {
+    if (!user) return;
+    if (newPlan === "Studio Pass") {
+      accessService.grantAccess(user.id || user.email, "pass-monthly");
+    } else {
+      accessService.revokeAllAccess(user.id || user.email);
+    }
+    setProfile((prev) => ({ ...prev, plan: newPlan }));
   };
 
   // Sample progress records
@@ -178,6 +210,125 @@ export default function ProfilePage() {
     { day: "S", label: "Sat", active: true },
     { day: "S", label: "Sun", active: false },
   ];
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] py-8 sm:py-16 px-4 sm:px-6 lg:px-8 pb-24 sm:pb-16">
+        <div className="max-w-xl mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-200">
+          
+          {/* Welcome Card */}
+          <div className="rounded-[32px] bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 p-6 sm:p-10 text-center space-y-5 shadow-sm">
+            <div className="w-16 h-16 rounded-3xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto shadow-xs">
+              <Sparkles className="w-8 h-8 fill-current" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                Seekho Dance Profile
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white">
+                Sign in / Create Account
+              </h1>
+              <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
+                Create a free account or sign in to save your practice progress, bookmark choreographies, and unlock studio breakdown tools.
+              </p>
+            </div>
+
+            {/* Quick Authentication Buttons */}
+            <div className="space-y-2.5 pt-2 max-w-sm mx-auto">
+              <button
+                type="button"
+                onClick={() => signInWithGoogle()}
+                className="w-full py-3.5 px-5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200/90 dark:border-neutral-700/80 text-neutral-900 dark:text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition active:scale-98 shadow-xs cursor-pointer"
+              >
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+                <span>Continue with Google</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => openAuthModal(null, "Sign in or create your Seekho Dance account")}
+                className="w-full py-3.5 px-5 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition active:scale-98 shadow-sm cursor-pointer"
+              >
+                <span>Continue with Email</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="pt-2 text-[11px] text-neutral-400">
+              Free to browse • No credit card required to explore
+            </div>
+          </div>
+
+          {/* Benefits Grid */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 text-center">
+              Why create an account?
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
+                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Mirror Mode & Controls</span>
+                </div>
+                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                  Flip video horizontally so left matches left, plus adjust playback speed down to 0.5x slow motion.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
+                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
+                  <Bookmark className="w-4 h-4" />
+                  <span>Save Practice Routines</span>
+                </div>
+                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                  Bookmark songs you want to learn and quickly resume right from where you left off.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
+                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
+                  <Flame className="w-4 h-4" />
+                  <span>Track Practice Streaks</span>
+                </div>
+                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                  Build muscle memory with daily practice streaks and earn badges as you master routines.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
+                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Sync Across Devices</span>
+                </div>
+                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                  Seamlessly switch between smartphone, tablet, and desktop with your progress intact.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Free browsing return button */}
+          <div className="text-center pt-2">
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 dark:text-neutral-400 hover:text-orange-600 transition"
+            >
+              <span>Explore choreographies freely</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0]">
@@ -261,20 +412,33 @@ export default function ProfilePage() {
                     </div>
                   )}
 
-                  {/* PRO / Studio Pass Pill Badge */}
-                  <span className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold bg-[#6C63FF]/15 text-[#544af4] dark:text-[#8c85ff] border border-[#6C63FF]/30 tracking-wide uppercase">
-                    <span>PRO</span>
-                    <Zap className="w-3 h-3 fill-current" />
+                  {/* Purchase / Access Status Badge */}
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold tracking-wide uppercase border",
+                      profile.plan === "Studio Pass"
+                        ? "bg-[#6C63FF]/15 text-[#544af4] dark:text-[#8c85ff] border-[#6C63FF]/30"
+                        : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300/40"
+                    )}
+                  >
+                    <span>{profile.plan}</span>
+                    {profile.plan === "Studio Pass" ? (
+                      <Zap className="w-3 h-3 fill-current" />
+                    ) : (
+                      <CheckCircle2 className="w-3 h-3" />
+                    )}
                   </span>
                 </div>
 
-                {/* Subtitle / Bio */}
-                <p className="text-xs sm:text-sm font-medium text-neutral-600 dark:text-neutral-300 max-w-md leading-relaxed">
-                  Viral Choreo Explorer & Performer
-                  <span className="text-neutral-400 dark:text-neutral-500 block sm:inline sm:before:content-['•'] sm:before:mx-2">
-                    Bollywood, Hip-Hop & Afrobeat
-                  </span>
-                </p>
+                {/* Subtitle / Email & Status */}
+                <div className="space-y-0.5">
+                  <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                    {profile.email}
+                  </p>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                    Account Status: <strong className="text-emerald-600 dark:text-emerald-400 font-semibold">Active Member</strong> • Verified Dancer
+                  </p>
+                </div>
 
                 {/* Location & Studio Meta */}
                 <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 dark:text-neutral-500">
@@ -282,20 +446,47 @@ export default function ProfilePage() {
                   <span>Seekho Dance Studio • Mumbai, India</span>
                 </div>
 
-                {/* Action Buttons */}
+                {/* Action Buttons: Edit, Upgrade, State Toggle, and Logout */}
                 <div className="pt-1.5 sm:pt-2 flex items-center gap-2 sm:gap-3 flex-wrap">
                   <button
                     onClick={() => setIsEditingName(true)}
-                    className="px-5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-bold bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-950 transition active:scale-95 shadow-sm touch-manipulation"
+                    className="px-4 sm:px-5 py-2 rounded-full text-xs font-bold bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-950 transition active:scale-95 shadow-sm touch-manipulation cursor-pointer"
                   >
                     Edit Profile
                   </button>
-                  <Link
-                    href="/pricing"
-                    className="px-5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-bold bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-300/80 dark:border-neutral-700 transition active:scale-95 shadow-2xs touch-manipulation"
+
+                  {profile.plan !== "Studio Pass" && (
+                    <Link
+                      href="/pricing"
+                      className="px-4 sm:px-5 py-2 rounded-full text-xs font-bold bg-orange-600 hover:bg-orange-500 text-white transition active:scale-95 shadow-sm shadow-orange-600/25 touch-manipulation flex items-center gap-1"
+                    >
+                      <Sparkles className="w-3 h-3 fill-current" />
+                      <span>Studio Pass (₹499/mo)</span>
+                    </Link>
+                  )}
+
+                  {/* Dev State Switcher Pill */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleTogglePlan(
+                        profile.plan === "Studio Pass" ? "Free Explorer" : "Studio Pass"
+                      )
+                    }
+                    className="px-3 py-1.5 rounded-full text-[11px] font-mono border border-dashed border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white transition active:scale-95"
+                    title="Toggle between Free Explorer (Unpaid) and Studio Pass (Paid) to test playback behavior"
                   >
-                    Studio Pass (₹499/mo)
-                  </Link>
+                    Test: Switch to {profile.plan === "Studio Pass" ? "Free Explorer (Unpaid)" : "Studio Pass (Paid)"}
+                  </button>
+
+                  {/* Logout Button */}
+                  <button
+                    onClick={() => signOut()}
+                    className="px-4 py-2 rounded-full text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 border border-red-200 dark:border-red-900/40 transition active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Log Out</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -802,9 +993,28 @@ export default function ProfilePage() {
                 </div>
                 <button
                   onClick={toggleTheme}
-                  className="px-3.5 py-1.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white font-semibold transition"
+                  className="px-3.5 py-1.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white font-semibold transition cursor-pointer"
                 >
                   Switch to {resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}
+                </button>
+              </div>
+
+              {/* Sign Out Option */}
+              <div className="py-4 flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-semibold text-red-600 dark:text-red-400 text-sm">
+                    Sign Out of Account
+                  </div>
+                  <div className="text-neutral-500 dark:text-neutral-400 text-xs mt-0.5">
+                    Signed in as {profile.email}. You can sign back in anytime.
+                  </div>
+                </div>
+                <button
+                  onClick={() => signOut()}
+                  className="px-4 py-2 rounded-xl bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-semibold transition active:scale-95 flex items-center gap-1.5 border border-red-200 dark:border-red-900/50 cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Log Out</span>
                 </button>
               </div>
             </div>

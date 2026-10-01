@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Layers, Tag, User } from "lucide-react";
+import { Home, Search, Layers, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function MobileNav() {
@@ -11,16 +11,16 @@ export function MobileNav() {
 
   const navTabs = [
     { name: "Home", href: "/", icon: Home },
+    { name: "Search", href: "/search", icon: Search },
     { name: "Style", href: "/styles", icon: Layers },
-    { name: "Pricing", href: "/pricing", icon: Tag },
     { name: "Profile", href: "/profile", icon: User },
   ];
 
-  // Active tab index for mathematically precise morphing glass lens
+  // Active tab index for mathematically precise morphing glass lens (strictly 4 items)
   const getActiveIndex = () => {
     if (pathname === "/") return 0;
-    if (pathname.startsWith("/styles")) return 1;
-    if (pathname.startsWith("/pricing")) return 2;
+    if (pathname.startsWith("/search")) return 1;
+    if (pathname.startsWith("/styles")) return 2;
     if (pathname.startsWith("/profile")) return 3;
     return -1;
   };

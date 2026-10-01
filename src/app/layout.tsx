@@ -5,6 +5,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { AuthProvider } from "@/context/AuthContext";
+import { AuthModal } from "@/components/auth/AuthModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,10 +83,13 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] selection:bg-orange-500 selection:text-white font-sans pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <MobileNav />
+          <AuthProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <MobileNav />
+            <AuthModal />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

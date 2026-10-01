@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, Circle, Footprints, Dumbbell, Compass, Repeat } from "lucide-react";
+import { CheckCircle2, Circle, Footprints, Dumbbell, Compass, Repeat, Lock, Sparkles } from "lucide-react";
 import { DanceStep, DanceRoutine } from "@/types";
 import { formatTime, cn } from "@/lib/utils";
 
@@ -12,6 +12,9 @@ interface StepLessonListProps {
   onSelectStep: (step: DanceStep) => void;
   onToggleCompleteStep: (stepId: string) => void;
   onPracticeStep: (step: DanceStep) => void;
+  isLocked?: boolean;
+  price?: number;
+  onUnlockRequest?: () => void;
 }
 
 export function StepLessonList({
@@ -21,6 +24,9 @@ export function StepLessonList({
   onSelectStep,
   onToggleCompleteStep,
   onPracticeStep,
+  isLocked = false,
+  price = 299,
+  onUnlockRequest,
 }: StepLessonListProps) {
   const totalSteps = routine.steps.length;
   const completedCount = completedStepIds.length;
@@ -75,6 +81,7 @@ export function StepLessonList({
       {/* Step List Items */}
       <div className="divide-y divide-neutral-100 dark:divide-neutral-800/80">
         {routine.steps.map((step) => {
+          const isStepLocked = isLocked && step.stepNumber > 1;
           const isActive = activeStep.id === step.id;
           const isCompleted = completedStepIds.includes(step.id);
           const FocalIcon = getFocalIcon(step.focalArea);
@@ -86,41 +93,70 @@ export function StepLessonList({
                 "p-4 transition-all duration-150",
                 isActive
                   ? "bg-orange-50/50 dark:bg-orange-950/20 border-l-4 border-l-orange-600 pl-3.5"
+                  : isStepLocked
+                  ? "opacity-75 hover:bg-neutral-50/40 dark:hover:bg-neutral-800/30"
                   : "hover:bg-neutral-50/60 dark:hover:bg-neutral-800/40"
               )}
             >
               <div className="flex items-start gap-3">
-                {/* Completion Toggle Button */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleCompleteStep(step.id);
-                  }}
-                  className="mt-0.5 text-neutral-400 hover:text-orange-500 transition-colors shrink-0"
-                  aria-label={isCompleted ? "Mark incomplete" : "Mark completed"}
-                >
-                  {isCompleted ? (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 fill-emerald-50 dark:fill-emerald-950/60" />
-                  ) : (
-                    <Circle className="w-5 h-5 text-neutral-300 dark:text-neutral-700 hover:text-neutral-500" />
-                  )}
-                </button>
+                {/* Completion Toggle Button / Lock Icon */}
+                {isStepLocked ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUnlockRequest?.();
+                    }}
+                    className="mt-0.5 p-0.5 text-neutral-400 hover:text-orange-500 transition-colors shrink-0"
+                    title="Locked step. Click to unlock."
+                  >
+                    <Lock className="w-4 h-4 text-orange-500" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleCompleteStep(step.id);
+                    }}
+                    className="mt-0.5 text-neutral-400 hover:text-orange-500 transition-colors shrink-0"
+                    aria-label={isCompleted ? "Mark incomplete" : "Mark completed"}
+                  >
+                    {isCompleted ? (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 fill-emerald-50 dark:fill-emerald-950/60" />
+                    ) : (
+                      <Circle className="w-5 h-5 text-neutral-300 dark:text-neutral-700 hover:text-neutral-500" />
+                    )}
+                  </button>
+                )}
 
                 {/* Step Details & Main Click Target */}
                 <div
                   className="flex-1 min-w-0 cursor-pointer"
-                  onClick={() => onSelectStep(step)}
+                  onClick={() => {
+                    if (isStepLocked) {
+                      onUnlockRequest?.();
+                    } else {
+                      onSelectStep(step);
+                    }
+                  }}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs font-semibold text-neutral-400">
                         STEP {step.stepNumber.toString().padStart(2, "0")}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
-                        <FocalIcon className="w-3 h-3 text-neutral-400" />
-                        {step.focalArea}
-                      </span>
+                      {isStepLocked ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300">
+                          <Lock className="w-2.5 h-2.5" />
+                          Locked
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                          <FocalIcon className="w-3 h-3 text-neutral-400" />
+                          {step.focalArea}
+                        </span>
+                      )}
                     </div>
 
                     <span className="font-mono text-[11px] text-neutral-400">
@@ -140,7 +176,7 @@ export function StepLessonList({
                   </p>
 
                   {/* Expanded Active Step Content */}
-                  {isActive && (
+                  {isActive && !isStepLocked && (
                     <div className="mt-3 pt-3 border-t border-orange-200/50 dark:border-orange-900/40 space-y-2.5 animate-in fade-in duration-200">
                       {/* Instructor Cue Note */}
                       <div className="p-2.5 rounded-lg bg-white/80 dark:bg-neutral-900/90 border border-orange-200/60 dark:border-orange-900/40 text-xs text-neutral-700 dark:text-neutral-300">
@@ -171,6 +207,29 @@ export function StepLessonList({
           );
         })}
       </div>
+
+      {/* Unlock Routine Banner when locked */}
+      {isLocked && (
+        <div className="p-4 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 dark:from-orange-950/40 dark:via-neutral-900 dark:to-orange-950/40 border-t border-orange-200 dark:border-orange-900/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-left w-full sm:w-auto">
+            <p className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-orange-600" />
+              <span>Unlock Full Routine (Steps 02–{totalSteps.toString().padStart(2, "0")})</span>
+            </p>
+            <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+              ₹{price} one-time • Full breakdown, tempo drills & mirror flip
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onUnlockRequest}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold shadow-md shadow-orange-600/25 active:scale-95 transition flex items-center justify-center gap-1.5 shrink-0"
+          >
+            <Sparkles className="w-3.5 h-3.5 fill-current" />
+            <span>Unlock Choreography</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

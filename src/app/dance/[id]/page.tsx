@@ -203,9 +203,9 @@ export default function DanceLearningPage({ params }: DancePageProps) {
           {/* Back link & Song title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Link
-              href="/explore"
+              href="/search"
               className="p-1.5 rounded-xl text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition shrink-0 active:scale-95"
-              title="Back to Explore"
+              title="Back to Search"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
@@ -461,7 +461,7 @@ export default function DanceLearningPage({ params }: DancePageProps) {
                 </p>
               </div>
               <Link
-                href={`/explore?style=${encodeURIComponent(routine.style)}`}
+                href={`/search?style=${encodeURIComponent(routine.style)}`}
                 className="text-xs font-semibold text-orange-600 hover:text-orange-700 dark:text-orange-400 transition"
               >
                 View all in {routine.style} →

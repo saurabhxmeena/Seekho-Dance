@@ -155,18 +155,10 @@ export function FeaturedHeroCarousel({ routines }: FeaturedHeroCarouselProps) {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/dance/${routine.id}`}
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition shadow-md shadow-orange-600/25 active:scale-95 text-center touch-manipulation"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition shadow-md shadow-orange-600/25 active:scale-95 text-center touch-manipulation"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
                       <span>Start Step 01</span>
-                    </Link>
-
-                    <Link
-                      href="/explore"
-                      className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-neutral-200 text-xs font-semibold transition active:scale-95 text-center border border-white/10 touch-manipulation"
-                    >
-                      <span>Library</span>
-                      <ArrowRight className="w-3 h-3" />
                     </Link>
                   </div>
                 </div>

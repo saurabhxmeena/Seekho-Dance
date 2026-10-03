@@ -1,392 +1,401 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
-import {
-  Search,
-  X,
-  Music,
-  ArrowRight,
-  Clock,
-  Trash2,
-  TrendingUp,
-  Sparkles,
-  Layers,
-  Filter,
-} from "lucide-react";
-import { DANCE_ROUTINES } from "@/data/dances";
+import { useSearchParams } from "next/navigation";
+import { Search, ArrowRight, Layers, Play, X } from "lucide-react";
 import { DANCE_CATEGORIES } from "@/data/categories";
-import { DanceCard } from "@/components/discovery/DanceCard";
-import { filterDances } from "@/lib/utils";
+import { DANCE_ROUTINES } from "@/data/dances";
 import { cn } from "@/lib/utils";
 
-const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced"];
-const POPULAR_SUGGESTIONS = [
-  "Tauba Tauba",
-  "Chaleya",
-  "Bollywood",
-  "Wedding",
-  "Bhangra",
-  "Beginner",
-  "Rajasthani",
-];
-const RECENT_SEARCHES_KEY = "seekho_recent_searches";
+const POPULAR_CATEGORIES = ["Bollywood", "Bhangra", "Wedding", "Rajasthani", "Haryanvi"] as const;
 
 function SearchContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+
   const initialQuery = searchParams.get("q") || "";
+  const initialStyle = searchParams.get("style") || "";
 
   const [query, setQuery] = useState(initialQuery);
-  const [selectedDifficulty, setSelectedDifficulty] = useState("All");
-  const [selectedStyle, setSelectedStyle] = useState("All");
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [isFocused, setIsFocused] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialStyle || null);
 
-  // Sync from URL param
+  // Sync state if URL searchParams change
   useEffect(() => {
-    const q = searchParams.get("q") || "";
-    setQuery(q);
-    const s = searchParams.get("style") || "All";
-    setSelectedStyle(s);
+    const s = searchParams.get("style");
+    const q = searchParams.get("q");
+    if (s !== null) setSelectedCategory(s || null);
+    if (q !== null) setQuery(q || "");
   }, [searchParams]);
 
-  // Load recent searches from localStorage
+  // Subtle spring-on-scroll intersection observer
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
-      if (stored) {
-        setRecentSearches(JSON.parse(stored));
-      }
-    } catch (e) {}
-  }, []);
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const saveRecentSearch = (searchTerm: string) => {
-    const term = searchTerm.trim();
-    if (!term) return;
-    try {
-      const updated = Array.from(new Set([term, ...recentSearches])).slice(0, 6);
-      setRecentSearches(updated);
-      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
-    } catch (e) {}
-  };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("spring-enter");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -15px 0px" }
+    );
 
-  const clearRecentSearches = () => {
-    setRecentSearches([]);
-    try {
-      localStorage.removeItem(RECENT_SEARCHES_KEY);
-    } catch (e) {}
-  };
+    const targets = document.querySelectorAll(".spring-scroll-target");
+    targets.forEach((el) => observer.observe(el));
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      saveRecentSearch(query.trim());
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+    return () => observer.disconnect();
+  }, [selectedCategory, query]);
+
+  const handleSelectCategory = (style: string) => {
+    if (selectedCategory === style) {
+      setSelectedCategory(null);
+    } else {
+      setSelectedCategory(style);
+      setQuery("");
     }
   };
 
-  const handleSuggestionClick = (term: string) => {
-    setQuery(term);
-    saveRecentSearch(term);
-    router.push(`/search?q=${encodeURIComponent(term)}`);
+  const handleClearCategory = () => {
+    setSelectedCategory(null);
   };
 
-  const handleClearQuery = () => {
-    setQuery("");
-    router.push("/search");
-  };
-
-  // Instant reactive filtered results
-  const results = useMemo(() => {
-    return filterDances(DANCE_ROUTINES, {
-      query: query.trim(),
-      difficulty: selectedDifficulty,
-      style: selectedStyle,
-      sortBy: "featured",
+  // Video results for selected popular / style category
+  const categoryVideos = useMemo(() => {
+    if (!selectedCategory) return [];
+    const cat = selectedCategory.toLowerCase();
+    return DANCE_ROUTINES.filter((r) => {
+      const routineStyle = r.style.toLowerCase();
+      if (cat === "bhangra") {
+        return routineStyle.includes("punjabi") || routineStyle.includes("bhangra");
+      }
+      if (cat.includes("mashup") && cat.includes("traditional")) {
+        return routineStyle.includes("wedding") || routineStyle.includes("traditional");
+      }
+      if (cat.includes("mashup")) {
+        return routineStyle.includes("bollywood") || routineStyle.includes("wedding") || routineStyle.includes("punjabi");
+      }
+      if (cat.includes("festival")) {
+        return routineStyle.includes("traditional") || routineStyle.includes("rajasthani") || r.isTrending;
+      }
+      return (
+        routineStyle.includes(cat) ||
+        r.title.toLowerCase().includes(cat) ||
+        r.artist.toLowerCase().includes(cat)
+      );
     });
-  }, [query, selectedDifficulty, selectedStyle]);
+  }, [selectedCategory]);
 
-  const hasActiveFilters = query.trim() !== "" || selectedDifficulty !== "All" || selectedStyle !== "All";
+  // Matching routines when typing in the search bar
+  const matchingRoutines = useMemo(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase();
+    return DANCE_ROUTINES.filter((r) => {
+      const routineStyle = r.style.toLowerCase();
+      const isBhangraMatch = q.includes("bhangra") && routineStyle.includes("punjabi");
+      return (
+        r.title.toLowerCase().includes(q) ||
+        r.artist.toLowerCase().includes(q) ||
+        routineStyle.includes(q) ||
+        r.creator.toLowerCase().includes(q) ||
+        isBhangraMatch
+      );
+    });
+  }, [query]);
+
+  // Categories filtered by text search
+  const filteredCategories = useMemo(() => {
+    if (!query.trim()) return DANCE_CATEGORIES;
+    const q = query.toLowerCase();
+    return DANCE_CATEGORIES.filter(
+      (cat) =>
+        cat.name.toLowerCase().includes(q) ||
+        cat.tagline.toLowerCase().includes(q) ||
+        cat.description.toLowerCase().includes(q) ||
+        cat.sampleSongs.some((s) => s.toLowerCase().includes(q))
+    );
+  }, [query]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] pb-24 sm:pb-16">
-      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-6">
-        
-        {/* 1. Integrated Mobile & Desktop Search Header */}
-        <div className="max-w-3xl mx-auto space-y-3">
-          
-          {/* Headline */}
+    <div className="bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] pb-2 sm:pb-6">
+      <div className="max-w-5xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-5 pb-2 sm:py-8 space-y-6 sm:space-y-8">
+
+        {/* ── Header ── */}
+        <div className="max-w-2xl space-y-1 spring-scroll-target spring-enter">
+          <span className="text-[11px] font-semibold tracking-wider uppercase text-orange-600 dark:text-orange-400">
+            Explore Dance Styles
+          </span>
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-950 dark:text-[#EDEDF0]">
+            Find Your Style
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-500 dark:text-[#9494A0]">
+            Browse dance categories or search for a specific style, song, or instructor.
+          </p>
+        </div>
+
+        {/* ── Search Bar ── */}
+        <div className="relative group max-w-2xl spring-scroll-target spring-enter">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-500 shrink-0 pointer-events-none transition-transform group-focus-within:scale-110" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              if (e.target.value && selectedCategory) {
+                setSelectedCategory(null);
+              }
+            }}
+            placeholder="Search style, song, or instructor…"
+            className="w-full pl-11 pr-4 py-3 sm:py-3.5 text-sm bg-white dark:bg-[#161618] border border-neutral-200/90 dark:border-neutral-800 rounded-2xl placeholder-neutral-400 text-neutral-900 dark:text-white outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-2xs transition-all"
+            autoComplete="off"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition active:scale-90"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* ── Popular Right Now ── */}
+        <div className="space-y-2.5 spring-scroll-target spring-enter">
           <div className="flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-semibold tracking-wider uppercase text-orange-600 dark:text-orange-400">
-                Discover Routines
-              </span>
-              <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white">
-                Search Dance Library
-              </h1>
-            </div>
-            {query && (
-              <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-neutral-200/70 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
-                {results.length} result{results.length === 1 ? "" : "s"}
-              </span>
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              Popular right now
+            </p>
+            {selectedCategory && (
+              <button
+                type="button"
+                onClick={handleClearCategory}
+                className="text-[11px] font-semibold text-orange-600 dark:text-orange-400 hover:underline"
+              >
+                Clear filter
+              </button>
             )}
           </div>
-
-          {/* Search Input Box */}
-          <form onSubmit={handleSearchSubmit} className="relative group">
-            <div className="relative flex items-center">
-              <Search className="absolute left-4 w-5 h-5 text-orange-600 dark:text-orange-500 shrink-0 pointer-events-none transition-transform group-focus-within:scale-110" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                placeholder="Search song, instructor, dance style or keyword..."
-                className="w-full pl-12 pr-24 sm:pr-28 py-3 sm:py-3.5 text-xs sm:text-sm bg-white dark:bg-[#161618] border border-neutral-200/90 dark:border-neutral-800 rounded-2xl placeholder-neutral-400 text-neutral-900 dark:text-white outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-sm transition-all"
-                autoComplete="off"
-              />
-              <div className="absolute right-2.5 flex items-center gap-1">
-                {query && (
-                  <button
-                    type="button"
-                    onClick={handleClearQuery}
-                    className="p-1 rounded-full text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-                    aria-label="Clear query"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+          <div className="flex flex-wrap gap-2">
+            {POPULAR_CATEGORIES.map((style) => {
+              const isSelected = selectedCategory?.toLowerCase() === style.toLowerCase();
+              return (
                 <button
-                  type="submit"
-                  className="px-3 sm:px-4 py-1.5 bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 rounded-xl text-xs font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 transition active:scale-95 shadow-xs"
-                >
-                  Search
-                </button>
-              </div>
-            </div>
-          </form>
-
-          {/* 2. Filter Pills: Dance Styles & Difficulty (Horizontal Scrollable on Mobile) */}
-          <div className="space-y-2 pt-1">
-            {/* Style Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              <span className="text-[11px] font-mono uppercase text-neutral-400 shrink-0 pr-1 hidden sm:inline">
-                Style:
-              </span>
-              {["All", "Bollywood", "Traditional", "Rajasthani", "Haryanvi", "Wedding", "Punjabi"].map((st) => (
-                <button
-                  key={st}
-                  onClick={() => setSelectedStyle(st)}
+                  key={style}
+                  type="button"
+                  onClick={() => handleSelectCategory(style)}
                   className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition active:scale-95 shrink-0",
-                    selectedStyle === st
-                      ? "bg-orange-600 text-white font-semibold shadow-xs"
-                      : "bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                    "px-3.5 py-1.5 rounded-full text-xs transition-all active:scale-95 touch-manipulation inline-flex items-center gap-1.5 shadow-2xs",
+                    isSelected
+                      ? "bg-orange-600 text-white border border-orange-600 font-semibold shadow-xs"
+                      : "bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:border-orange-500/60 hover:text-orange-600 dark:hover:text-orange-400 font-medium"
                   )}
                 >
-                  {st === "All" ? "All Styles" : st}
+                  <span>{style}</span>
+                  {isSelected && (
+                    <span className="w-3.5 h-3.5 rounded-full bg-white/25 flex items-center justify-center text-[10px] leading-none">
+                      ×
+                    </span>
+                  )}
                 </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Category Video Results (Direct video results from Popular Right Now or selected style) ── */}
+        {selectedCategory && (
+          <div className="space-y-3 spring-scroll-target spring-enter">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Play className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400 fill-current" />
+                <h2 className="text-sm font-bold text-neutral-950 dark:text-white">
+                  {selectedCategory} Dance Videos ({categoryVideos.length})
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={handleClearCategory}
+                className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:text-orange-600 dark:hover:text-orange-400 transition"
+              >
+                Show all styles
+              </button>
+            </div>
+
+            {categoryVideos.length === 0 ? (
+              <div className="py-8 text-center bg-white dark:bg-[#161618] rounded-2xl border border-neutral-200/80 dark:border-neutral-800 p-4">
+                <p className="text-xs text-neutral-500">No videos found for this style yet.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {categoryVideos.map((routine, idx) => (
+                  <Link
+                    key={routine.id}
+                    href={`/dance/${routine.slug || routine.id}`}
+                    style={{ animationDelay: `${idx * 40}ms` }}
+                    className="spring-scroll-target spring-enter flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition group active:scale-[0.98] shadow-2xs"
+                  >
+                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden shrink-0 bg-neutral-100 dark:bg-neutral-800 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={routine.coverImage}
+                        alt={routine.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-white/90 dark:bg-neutral-900/90 text-orange-600 flex items-center justify-center shadow-xs">
+                          <Play className="w-2.5 h-2.5 fill-current translate-x-0.5" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm font-bold text-neutral-950 dark:text-white line-clamp-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                        {routine.title}
+                      </p>
+                      <p className="text-[11px] text-neutral-500 dark:text-neutral-400 line-clamp-1 mt-0.5">
+                        {routine.artist} · {routine.style}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1 text-[10px] text-neutral-400 font-mono">
+                        <span>{routine.durationMinutes?.replace(" breakdown", "") || "12 min"}</span>
+                        <span>•</span>
+                        <span className="text-orange-600 dark:text-orange-400 font-semibold">{routine.difficulty}</span>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-300 dark:text-neutral-600 group-hover:text-orange-500 transition-colors ml-auto shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Matching Routines (shown when searching by text) ── */}
+        {query && matchingRoutines.length > 0 && (
+          <div className="space-y-2.5 spring-scroll-target spring-enter">
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              Matching Videos ({matchingRoutines.length})
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {matchingRoutines.map((routine, idx) => (
+                <Link
+                  key={routine.id}
+                  href={`/dance/${routine.slug || routine.id}`}
+                  style={{ animationDelay: `${idx * 35}ms` }}
+                  className="spring-scroll-target spring-enter flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition group active:scale-[0.98] shadow-2xs"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden shrink-0 bg-neutral-100 dark:bg-neutral-800 relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={routine.coverImage}
+                      alt={routine.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-white/90 dark:bg-neutral-900/90 text-orange-600 flex items-center justify-center shadow-xs">
+                        <Play className="w-2.5 h-2.5 fill-current translate-x-0.5" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-bold text-neutral-950 dark:text-white line-clamp-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                      {routine.title}
+                    </p>
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 line-clamp-1 mt-0.5">
+                      {routine.artist} · {routine.style}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1 text-[10px] text-neutral-400 font-mono">
+                      <span>{routine.durationMinutes?.replace(" breakdown", "") || "12 min"}</span>
+                      <span>•</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">{routine.difficulty}</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 dark:text-neutral-600 group-hover:text-orange-500 transition-colors ml-auto shrink-0" />
+                </Link>
               ))}
             </div>
+          </div>
+        )}
 
-            {/* Difficulty Pills */}
-            <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-mono uppercase text-neutral-400 shrink-0 pr-1 hidden sm:inline">
-                  Level:
-                </span>
-                {DIFFICULTIES.map((diff) => (
-                  <button
-                    key={diff}
-                    onClick={() => setSelectedDifficulty(diff)}
-                    className={cn(
-                      "px-2.5 py-1 rounded-xl text-[11px] font-medium whitespace-nowrap transition active:scale-95 shrink-0",
-                      selectedDifficulty === diff
-                        ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 font-semibold shadow-2xs"
-                        : "bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
-                    )}
-                  >
-                    {diff}
-                  </button>
-                ))}
-              </div>
-
-              {hasActiveFilters && (
-                <button
-                  onClick={() => {
-                    setQuery("");
-                    setSelectedDifficulty("All");
-                    setSelectedStyle("All");
-                    router.push("/search");
-                  }}
-                  className="text-[11px] text-orange-600 dark:text-orange-400 hover:underline shrink-0 font-medium"
-                >
-                  Reset filters
-                </button>
-              )}
-            </div>
+        {/* ── Dance Styles Grid ── */}
+        <div className="space-y-3 spring-scroll-target spring-enter">
+          <div className="flex items-center gap-2">
+            <Layers className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+            <h2 className="text-sm font-bold text-neutral-950 dark:text-white">
+              {query.trim()
+                ? `${filteredCategories.length} style${filteredCategories.length !== 1 ? "s" : ""} found`
+                : "Browse by Dance Style"}
+            </h2>
           </div>
 
-          {/* 3. Recent Searches (If any) */}
-          {recentSearches.length > 0 && !query && (
-            <div className="p-3 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-500 font-semibold flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-neutral-400" />
-                  Recent Searches
-                </span>
-                <button
-                  type="button"
-                  onClick={clearRecentSearches}
-                  className="text-[11px] text-neutral-400 hover:text-red-500 transition flex items-center gap-1"
-                >
-                  <Trash2 className="w-3 h-3" />
-                  <span>Clear</span>
-                </button>
-              </div>
-
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {recentSearches.map((term) => (
-                  <button
-                    key={term}
-                    onClick={() => handleSuggestionClick(term)}
-                    className="px-2.5 py-1 rounded-lg text-xs bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:bg-orange-50 hover:text-orange-600 dark:hover:bg-neutral-800 transition"
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
+          {filteredCategories.length === 0 ? (
+            <div className="py-12 text-center bg-white dark:bg-[#161618] rounded-2xl border border-neutral-200/80 dark:border-neutral-800">
+              <Layers className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                No styles match &ldquo;{query}&rdquo;
+              </p>
+              <p className="text-xs text-neutral-400 mt-1">
+                Try searching for Bollywood, Wedding, Rajasthani, or Bhangra.
+              </p>
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="mt-4 px-4 py-1.5 text-xs font-semibold rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 hover:opacity-80 transition active:scale-95"
+              >
+                Show all styles
+              </button>
             </div>
-          )}
-
-          {/* 4. Popular Suggestions */}
-          {!query && (
-            <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-              <span className="text-[11px] font-mono text-neutral-400 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3 text-orange-500" />
-                Popular:
-              </span>
-              {POPULAR_SUGGESTIONS.map((sug) => (
-                <button
-                  key={sug}
-                  onClick={() => handleSuggestionClick(sug)}
-                  className="px-2 py-0.5 rounded-md text-[11px] bg-neutral-200/60 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 transition"
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+              {filteredCategories.map((category, idx) => (
+                <Link
+                  key={category.id}
+                  href={`/styles/${category.slug}`}
+                  style={{ animationDelay: `${idx * 40}ms` }}
+                  className="spring-scroll-target spring-enter text-left group relative rounded-xl sm:rounded-2xl overflow-hidden aspect-[16/11] bg-neutral-900 border border-neutral-200/70 dark:border-white/[0.08] flex flex-col justify-end p-2.5 sm:p-5 hover:shadow-xl hover:border-neutral-400 dark:hover:border-white/20 transition-all duration-300 active:scale-[0.98] touch-manipulation block"
                 >
-                  {sug}
-                </button>
+                  {/* Background Image */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={category.coverImage}
+                    alt={category.name}
+                    className="absolute inset-0 w-full h-full object-cover opacity-65 group-hover:scale-105 group-hover:opacity-80 transition-all duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent" />
+
+                  {/* Content */}
+                  <div className="relative z-10 space-y-0.5">
+                    <div className="flex items-center justify-between gap-1.5">
+                      <h3 className="text-xs sm:text-base font-bold text-white tracking-tight line-clamp-1">
+                        {category.name}
+                      </h3>
+                      <div className="hidden sm:flex w-6 h-6 rounded-full bg-white/10 backdrop-blur-md items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <ArrowRight className="w-3 h-3" />
+                      </div>
+                    </div>
+                    <p className="text-[10px] sm:text-xs text-neutral-300 line-clamp-1">
+                      {category.tagline}
+                    </p>
+                    {/* Sample songs as tiny pills — desktop only */}
+                    <div className="hidden sm:flex flex-wrap gap-1 pt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {category.sampleSongs.slice(0, 2).map((song) => (
+                        <span
+                          key={song}
+                          className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-white/10 text-white/80 backdrop-blur-sm"
+                        >
+                          {song}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
         </div>
-
-        {/* 5. Results Section */}
-        {results.length > 0 ? (
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between text-xs text-neutral-500">
-              <span>Showing {results.length} choreographies</span>
-              {selectedStyle !== "All" && (
-                <span className="font-semibold text-neutral-800 dark:text-neutral-200">
-                  Style: {selectedStyle}
-                </span>
-              )}
-            </div>
-
-            {/* Responsive Results Grid (2 on mobile, up to 4 on lg) */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
-              {results.map((routine) => (
-                <DanceCard key={routine.id} routine={routine} />
-              ))}
-            </div>
-          </div>
-        ) : (
-          /* 6. No Results State */
-          <div className="py-14 sm:py-20 text-center bg-white dark:bg-[#161618] rounded-[28px] sm:rounded-[32px] border border-neutral-200/90 dark:border-neutral-800 p-6 sm:p-8 max-w-lg mx-auto space-y-4 shadow-sm animate-in fade-in">
-            <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto">
-              <Music className="w-6 h-6" />
-            </div>
-
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-neutral-950 dark:text-white">
-                No dance tutorials match &ldquo;{query}&rdquo;
-              </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 max-w-sm mx-auto leading-relaxed">
-                Check for typos or try searching for instructor names (e.g. Bhavin, Team Naach, Ankan), song titles, or dance styles.
-              </p>
-            </div>
-
-            {/* Quick Keyword Suggestions to Try */}
-            <div className="flex items-center justify-center gap-1.5 flex-wrap pt-1">
-              {["Tauba Tauba", "Chaleya", "Bollywood", "Bhangra"].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => handleSuggestionClick(item)}
-                  className="px-2.5 py-1 rounded-full text-xs bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition"
-                >
-                  Try &ldquo;{item}&rdquo;
-                </button>
-              ))}
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setQuery("");
-                  setSelectedDifficulty("All");
-                  setSelectedStyle("All");
-                  router.push("/search");
-                }}
-                className="px-5 py-2.5 text-xs font-semibold bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-200 transition shadow-xs"
-              >
-                Browse All Choreographies
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* 7. Browse by Category Shortcut Rail (Shown when query is empty) */}
-        {!query && (
-          <div className="pt-8 border-t border-neutral-200/80 dark:border-neutral-800 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-orange-600" />
-                <h3 className="text-sm font-bold text-neutral-950 dark:text-white">
-                  Browse by Dance Style
-                </h3>
-              </div>
-              <Link
-                href="/styles"
-                className="text-xs font-semibold text-orange-600 hover:text-orange-500 flex items-center gap-1"
-              >
-                <span>View all styles</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
-              {DANCE_CATEGORIES.slice(0, 6).map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => {
-                    setSelectedStyle(cat.name);
-                    saveRecentSearch(cat.name);
-                  }}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 hover:border-orange-500 text-left transition group active:scale-98 shadow-2xs"
-                >
-                  <h4 className="text-xs font-bold text-neutral-900 dark:text-white group-hover:text-orange-600 transition-colors line-clamp-1">
-                    {cat.name}
-                  </h4>
-                  <p className="text-[10px] text-neutral-400 line-clamp-1 mt-0.5">
-                    {cat.sampleSongs.join(", ")}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
       </div>
     </div>
   );
@@ -394,7 +403,14 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-neutral-400">Loading dance search...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-2">
+          <div className="w-8 h-8 rounded-full border-2 border-orange-500 border-t-transparent animate-spin mx-auto" />
+          <p className="text-xs text-neutral-400">Loading styles…</p>
+        </div>
+      </div>
+    }>
       <SearchContent />
     </Suspense>
   );

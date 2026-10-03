@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Flame,
   ArrowRight,
+  Mail,
   Trophy,
   Sliders,
   RotateCcw,
@@ -68,6 +69,27 @@ function StarburstBadge({
         {number}
       </span>
     </div>
+  );
+}
+
+// Devices Icon for Sync Across Devices benefit card (matching reference)
+function DevicesIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect width="13" height="10" x="2" y="4" rx="2" />
+      <path d="M7 18h4" />
+      <path d="M9 14v4" />
+      <rect width="6" height="10" x="15" y="10" rx="1.5" />
+      <circle cx="18" cy="17.5" r=".5" fill="currentColor" />
+    </svg>
   );
 }
 
@@ -213,35 +235,240 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] py-8 sm:py-16 px-4 sm:px-6 lg:px-8 pb-24 sm:pb-16">
-        <div className="max-w-xl mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-200">
+      <div className="w-full flex-1 flex flex-col justify-center bg-[#FAF7F2] dark:bg-[#0D0D11] text-neutral-900 dark:text-[#EDEDF0] pt-2 sm:pt-5 md:pt-8 lg:pt-10 pb-6 sm:pb-8 md:pb-12 px-4 sm:px-6 md:px-8 lg:px-12">
+        {/* Mobile View (< md): Exact approved pixel-perfect smartphone experience */}
+        <div className="md:hidden w-full max-w-sm sm:max-w-md mx-auto space-y-4 sm:space-y-4.5 animate-in fade-in duration-200">
           
-          {/* Welcome Card */}
-          <div className="rounded-[32px] bg-white dark:bg-[#161618] border border-neutral-200/80 dark:border-neutral-800 p-6 sm:p-10 text-center space-y-5 shadow-sm">
-            <div className="w-16 h-16 rounded-3xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto shadow-xs">
-              <Sparkles className="w-8 h-8 fill-current" />
+          {/* Hero Section with Classical Dancer Illustration & Sun Disc Backdrop */}
+          <div className="relative w-full pt-1 pb-1 min-h-[220px] sm:min-h-[250px] flex items-center">
+            {/* Ambient Soft Glow to Seamlessly Blend Image with Page Canvas */}
+            <div
+              aria-hidden="true"
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-[240px] sm:w-[280px] h-[220px] sm:h-[260px] bg-gradient-to-l from-amber-200/35 via-orange-100/20 to-transparent dark:from-amber-600/15 dark:via-orange-500/10 dark:to-transparent rounded-full blur-3xl pointer-events-none -z-10"
+            />
+
+            {/* Bharatanatyam Dancer Illustration on Right */}
+            <div className="absolute right-0 top-0 bottom-0 w-[205px] sm:w-[250px] pointer-events-none select-none z-0">
+              <Image
+                src="/profile_hero_dancer_light.png"
+                alt="Bharatanatyam Dancer"
+                fill
+                sizes="(max-width: 640px) 205px, 250px"
+                className="object-contain object-right-bottom dark:hidden drop-shadow-[0_4px_16px_rgba(235,160,90,0.12)]"
+                priority
+              />
+              <Image
+                src="/profile_hero_dancer_dark.png"
+                alt="Bharatanatyam Dancer"
+                fill
+                sizes="(max-width: 640px) 205px, 250px"
+                className="object-contain object-right-bottom hidden dark:block drop-shadow-[0_4px_24px_rgba(245,158,11,0.15)]"
+                priority
+              />
             </div>
 
-            <div className="space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">
-                Seekho Dance Profile
+            {/* Headline and Supporting Copy */}
+            <div className="relative z-10 max-w-[200px] sm:max-w-xs space-y-1">
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#F95721] block">
+                YOUR DANCE JOURNEY
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white">
-                Sign in / Create Account
+              <h1 className="text-[28px] sm:text-[35px] font-extrabold tracking-tight text-neutral-950 dark:text-white leading-[1.08] pt-0.5">
+                Keep your<br />
+                progress<br />
+                in motion.
               </h1>
-              <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
-                Create a free account or sign in to save your practice progress, bookmark choreographies, and unlock studio breakdown tools.
+              <p className="text-[12px] sm:text-[13px] text-neutral-500 dark:text-neutral-400 leading-snug pt-1">
+                Save routines, track practice,<br />
+                and unlock studio<br />
+                breakdown tools.
+              </p>
+            </div>
+          </div>
+
+          {/* Elevated Auth Action Card */}
+          <div className="relative z-10 rounded-[28px] bg-white dark:bg-[#16161B] border border-neutral-200/80 dark:border-white/[0.08] p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.03)] dark:shadow-none space-y-3">
+            {/* Google Login Button */}
+            <button
+              type="button"
+              onClick={() => signInWithGoogle()}
+              className="w-full h-12 py-3 px-4 rounded-2xl bg-white dark:bg-[#1C1C22] border border-neutral-200 dark:border-neutral-700/80 text-neutral-900 dark:text-white text-sm font-semibold flex items-center justify-center gap-2.5 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition active:scale-[0.99] shadow-2xs cursor-pointer"
+            >
+              <svg className="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            {/* Email Login Button */}
+            <button
+              type="button"
+              onClick={() => openAuthModal(null, "Sign in or create your Seekho Dance account")}
+              className="w-full h-12 py-3 px-4 rounded-2xl bg-[#141416] dark:bg-white text-white dark:text-neutral-950 text-sm font-semibold flex items-center justify-center relative hover:bg-neutral-800 dark:hover:bg-neutral-200 transition active:scale-[0.99] shadow-2xs cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <Mail className="w-4.5 h-4.5 shrink-0 stroke-[2.2px]" />
+                <span>Continue with Email</span>
+              </div>
+              <ArrowRight className="w-4.5 h-4.5 shrink-0 stroke-[2.2px] absolute right-4" />
+            </button>
+
+            {/* Footnote */}
+            <p className="text-[11.5px] sm:text-xs text-neutral-500 dark:text-neutral-400 text-center font-normal pt-0.5">
+              Free to browse • No credit card required
+            </p>
+          </div>
+
+          {/* Feature Section Header - Left Aligned */}
+          <div className="space-y-2.5 pt-1">
+            <h2 className="text-base sm:text-lg font-bold text-neutral-950 dark:text-white tracking-tight">
+              Why create an account?
+            </h2>
+
+            {/* 2x2 Feature Grid */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              {/* Card 1: Mirror Mode & Controls */}
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                  <RotateCcw className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#F95721] stroke-[2.2px]" />
+                </div>
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <h3 className="font-bold text-[11.5px] sm:text-xs text-neutral-950 dark:text-white leading-tight">
+                    Mirror Mode & Controls
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[10.5px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                    Flip videos and adjust speed to 0.5x.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 2: Save Practice Routines */}
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                  <Bookmark className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#F95721] stroke-[2.2px]" />
+                </div>
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <h3 className="font-bold text-[11.5px] sm:text-xs text-neutral-950 dark:text-white leading-tight">
+                    Save Practice Routines
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[10.5px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                    Bookmark songs and continue where you left off.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3: Practice Streaks */}
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                  <Flame className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#F95721] stroke-[2.2px]" />
+                </div>
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <h3 className="font-bold text-[11.5px] sm:text-xs text-neutral-950 dark:text-white leading-tight">
+                    Practice Streaks
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[10.5px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                    Build consistency and earn badges.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 4: Sync Across Devices */}
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                  <DevicesIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#F95721] stroke-[2.2px]" />
+                </div>
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <h3 className="font-bold text-[11.5px] sm:text-xs text-neutral-950 dark:text-white leading-tight">
+                    Sync Across Devices
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[10.5px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                    Access your progress on phone, tablet, and desktop.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Desktop View (>= md): Widescreen 2-Column Experience In True Accordance With Smartphone Aesthetics */}
+        <div className="hidden md:grid md:grid-cols-12 md:gap-8 lg:gap-12 xl:gap-16 items-center w-full max-w-5xl lg:max-w-6xl mx-auto py-2 lg:py-6 animate-in fade-in duration-200">
+          
+          {/* Left Column: Brand Hero & Classical Dancer Artwork Showcase */}
+          <div className="md:col-span-6 lg:col-span-6 space-y-5 lg:space-y-6">
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-orange-100/70 text-[#F95721] dark:bg-orange-950/40 dark:text-orange-400">
+                YOUR DANCE JOURNEY
+              </span>
+              <h1 className="text-3xl lg:text-4xl xl:text-[42px] font-extrabold tracking-tight text-neutral-950 dark:text-white leading-[1.12]">
+                Keep your progress <span className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent">in motion.</span>
+              </h1>
+              <p className="text-sm lg:text-[15px] text-neutral-600 dark:text-neutral-300 leading-relaxed max-w-md pt-1">
+                Save routines, track practice streaks, mirror tutorials, and unlock step-by-step choreographies crafted by India&apos;s top instructors.
               </p>
             </div>
 
-            {/* Quick Authentication Buttons */}
-            <div className="space-y-2.5 pt-2 max-w-sm mx-auto">
+            {/* Classical Dancer Artwork Container with Ambient Light Sun Disc */}
+            <div className="relative w-full h-[310px] lg:h-[360px] rounded-3xl overflow-hidden bg-gradient-to-b from-amber-50/60 via-orange-50/20 to-transparent dark:from-white/[0.03] dark:via-transparent dark:to-transparent border border-neutral-200/60 dark:border-white/[0.06] p-6 flex items-end justify-center shadow-xs">
+              {/* Radial Sun Disc / Ethereal Backglow */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-tr from-amber-200/35 via-orange-100/20 to-transparent dark:from-amber-600/20 dark:via-orange-500/10 dark:to-transparent rounded-full blur-3xl pointer-events-none -z-10"
+              />
+
+              {/* Bharatanatyam Dancer Artwork */}
+              <div className="relative w-full h-full pointer-events-none select-none">
+                <Image
+                  src="/profile_hero_dancer_light.png"
+                  alt="Bharatanatyam Dancer"
+                  fill
+                  sizes="(min-width: 1024px) 450px, 350px"
+                  className="object-contain object-bottom dark:hidden drop-shadow-[0_8px_24px_rgba(235,160,90,0.18)]"
+                  priority
+                />
+                <Image
+                  src="/profile_hero_dancer_dark.png"
+                  alt="Bharatanatyam Dancer"
+                  fill
+                  sizes="(min-width: 1024px) 450px, 350px"
+                  className="object-contain object-bottom hidden dark:block drop-shadow-[0_8px_32px_rgba(245,158,11,0.22)]"
+                  priority
+                />
+              </div>
+
+              {/* Floating Bottom Quality Pill */}
+              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-medium text-neutral-600 dark:text-neutral-400 bg-white/85 dark:bg-[#16161B]/85 backdrop-blur-md px-3.5 py-2 rounded-xl border border-neutral-200/60 dark:border-white/[0.08] shadow-xs">
+                <span className="flex items-center gap-1.5 font-semibold text-neutral-900 dark:text-white">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+                  Bollywood • Classical • Bhangra
+                </span>
+                <span className="text-orange-600 dark:text-orange-400 font-bold">50+ Routines</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Elevated Auth Action Card & 2x2 Feature Grid */}
+          <div className="md:col-span-6 lg:col-span-6 space-y-5">
+            {/* Elevated Auth Action Card */}
+            <div className="rounded-[28px] bg-white dark:bg-[#16161B] border border-neutral-200/80 dark:border-white/[0.08] p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.03)] dark:shadow-none space-y-3.5">
+              <div className="space-y-0.5">
+                <h2 className="text-base font-bold text-neutral-950 dark:text-white">
+                  Sign in or create account
+                </h2>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Instant access to practice bookmarks, streaks & studio tools
+                </p>
+              </div>
+
+              {/* Google Login Button */}
               <button
                 type="button"
                 onClick={() => signInWithGoogle()}
-                className="w-full py-3.5 px-5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200/90 dark:border-neutral-700/80 text-neutral-900 dark:text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition active:scale-98 shadow-xs cursor-pointer"
+                className="w-full h-12 py-3 px-4 rounded-2xl bg-white dark:bg-[#1C1C22] border border-neutral-200 dark:border-neutral-700/80 text-neutral-900 dark:text-white text-sm font-semibold flex items-center justify-center gap-2.5 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition active:scale-[0.99] shadow-2xs cursor-pointer"
               >
-                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <svg className="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
                   <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
                   <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
@@ -250,82 +477,99 @@ export default function ProfilePage() {
                 <span>Continue with Google</span>
               </button>
 
+              {/* Email Login Button */}
               <button
                 type="button"
                 onClick={() => openAuthModal(null, "Sign in or create your Seekho Dance account")}
-                className="w-full py-3.5 px-5 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition active:scale-98 shadow-sm cursor-pointer"
+                className="w-full h-12 py-3 px-4 rounded-2xl bg-[#141416] dark:bg-white text-white dark:text-neutral-950 text-sm font-semibold flex items-center justify-center relative hover:bg-neutral-800 dark:hover:bg-neutral-200 transition active:scale-[0.99] shadow-2xs cursor-pointer"
               >
-                <span>Continue with Email</span>
-                <ArrowRight className="w-4 h-4" />
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4.5 h-4.5 shrink-0 stroke-[2.2px]" />
+                  <span>Continue with Email</span>
+                </div>
+                <ArrowRight className="w-4.5 h-4.5 shrink-0 stroke-[2.2px] absolute right-4" />
               </button>
+
+              {/* Footnote */}
+              <p className="text-[11.5px] text-neutral-500 dark:text-neutral-400 text-center font-normal pt-0.5">
+                Free to browse • No credit card required
+              </p>
             </div>
 
-            <div className="pt-2 text-[11px] text-neutral-400">
-              Free to browse • No credit card required to explore
+            {/* Why create an account section */}
+            <div className="space-y-2.5 pt-1">
+              <h2 className="text-base font-bold text-neutral-950 dark:text-white tracking-tight">
+                Why create an account?
+              </h2>
+
+              {/* 2x2 Feature Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Card 1: Mirror Mode & Controls */}
+                <div className="p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                    <RotateCcw className="w-4.5 h-4.5 text-[#F95721] stroke-[2.2px]" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <h3 className="font-bold text-xs text-neutral-950 dark:text-white leading-tight">
+                      Mirror Mode & Controls
+                    </h3>
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                      Flip videos and adjust speed to 0.5x.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card 2: Save Practice Routines */}
+                <div className="p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                    <Bookmark className="w-4.5 h-4.5 text-[#F95721] stroke-[2.2px]" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <h3 className="font-bold text-xs text-neutral-950 dark:text-white leading-tight">
+                      Save Practice Routines
+                    </h3>
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                      Bookmark songs and continue where you left off.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card 3: Practice Streaks */}
+                <div className="p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                    <Flame className="w-4.5 h-4.5 text-[#F95721] stroke-[2.2px]" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <h3 className="font-bold text-xs text-neutral-950 dark:text-white leading-tight">
+                      Practice Streaks
+                    </h3>
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                      Build consistency and earn badges.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card 4: Sync Across Devices */}
+                <div className="p-3.5 rounded-2xl bg-white dark:bg-[#16161B] border border-neutral-200/70 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-none flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#FFF5EC] dark:bg-orange-950/40 flex items-center justify-center shrink-0">
+                    <DevicesIcon className="w-4.5 h-4.5 text-[#F95721] stroke-[2.2px]" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <h3 className="font-bold text-xs text-neutral-950 dark:text-white leading-tight">
+                      Sync Across Devices
+                    </h3>
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-snug">
+                      Access your progress on phone, tablet, and desktop.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Benefits Grid */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 text-center">
-              Why create an account?
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
-                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
-                  <RotateCcw className="w-4 h-4" />
-                  <span>Mirror Mode & Controls</span>
-                </div>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  Flip video horizontally so left matches left, plus adjust playback speed down to 0.5x slow motion.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
-                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
-                  <Bookmark className="w-4 h-4" />
-                  <span>Save Practice Routines</span>
-                </div>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  Bookmark songs you want to learn and quickly resume right from where you left off.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
-                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
-                  <Flame className="w-4 h-4" />
-                  <span>Track Practice Streaks</span>
-                </div>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  Build muscle memory with daily practice streaks and earn badges as you master routines.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-[#161618] border border-neutral-200/70 dark:border-neutral-800 space-y-1.5 shadow-2xs">
-                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-xs">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Sync Across Devices</span>
-                </div>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  Seamlessly switch between smartphone, tablet, and desktop with your progress intact.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Free browsing return button */}
-          <div className="text-center pt-2">
-            <Link
-              href="/explore"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 dark:text-neutral-400 hover:text-orange-600 transition"
-            >
-              <span>Explore choreographies freely</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
 
         </div>
+
       </div>
     );
   }
@@ -655,7 +899,7 @@ export default function ProfilePage() {
           </div>
 
           <Link
-            href="/explore"
+            href="/search"
             className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white pb-3 transition shrink-0"
           >
             <span>Explore catalogue</span>
@@ -818,13 +1062,13 @@ export default function ProfilePage() {
                 <Bookmark className="w-8 h-8 mx-auto text-neutral-400" />
                 <h3 className="text-base font-bold text-neutral-900 dark:text-white">No saved routines yet</h3>
                 <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-                  Browse the library to bookmark viral songs you want to practice later.
+                  Browse dance routines to bookmark viral songs you want to practice later.
                 </p>
                 <Link
-                  href="/explore"
+                  href="/search"
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-950 text-white dark:bg-white dark:text-neutral-950"
                 >
-                  Explore Dance Library
+                  Explore Dance Routines
                 </Link>
               </div>
             ) : (

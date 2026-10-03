@@ -43,6 +43,7 @@ export interface DanceRoutine {
   keyTechnique: string;
   learningCheckpoints: string[];
   steps: DanceStep[];
+  tags?: string[];
   isTrending?: boolean;
   isNew?: boolean;
   isFeatured?: boolean;

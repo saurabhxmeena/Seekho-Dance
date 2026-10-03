@@ -47,12 +47,30 @@ export const DANCE_CATEGORIES: DanceCategory[] = [
     sampleSongs: ["London Thumakda", "Gallan Goodiyaan", "Sauda Khara Khara"]
   },
   {
-    id: "punjabi",
-    name: "Punjabi & Bhangra Dance Videos",
-    slug: "punjabi",
-    tagline: "High-voltage dhol beats, energetic hops & festive swagger",
-    description: "Infectious Punjabi folk rhythms, dynamic shoulder bounces, and celebratory steps.",
-    coverImage: "/categories/punjabi.jpg",
-    sampleSongs: ["Mundian To Bach Ke", "Coka", "Lover"]
+    id: "dance-mashup",
+    name: "Dance Mashup",
+    slug: "dance-mashup",
+    tagline: "Mixed beats, trending moves & nonstop energy",
+    description: "Dynamic fusion choreography, fast transitions, and viral party mashups.",
+    coverImage: "/categories/dance-mashup.jpg",
+    sampleSongs: ["Tauba Tauba x Chaleya", "Kala Chashma", "London Thumakda Mashup"]
+  },
+  {
+    id: "festival-dance-special",
+    name: "Festival Dance Special",
+    slug: "festival-dance-special",
+    tagline: "Festive beats, celebration moves & popular dance songs",
+    description: "Joyful celebratory routines for festivals, garba nights, and celebration beats.",
+    coverImage: "/categories/festival.jpg",
+    sampleSongs: ["Chogada", "Nagada Sang Dhol", "Dholida"]
+  },
+  {
+    id: "traditional-wedding-mashup",
+    name: "Traditional Wedding Mashup",
+    slug: "traditional-wedding-mashup",
+    tagline: "Sangeet, wedding classics & celebration dances",
+    description: "Royal sangeet choreography, classic wedding anthems, and celebration group combinations.",
+    coverImage: "/categories/wedding-mashup.jpg",
+    sampleSongs: ["Mehendi Hai Rachnewali", "Sauda Khara Khara", "Bole Chudiyan"]
   }
 ];

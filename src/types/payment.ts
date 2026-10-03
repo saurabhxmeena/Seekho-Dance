@@ -21,7 +21,7 @@ export interface CoursePricing {
   displayPrice: number; // in rupees
   currency: string;
   isFree?: boolean;
-  type: "routine" | "membership";
+  type: "routine" | "membership" | "course";
   description?: string;
 }
 

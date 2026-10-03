@@ -108,7 +108,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           handleSelectRoutine(displayRoutines[selectedIndex].id);
         } else if (query.trim()) {
           onClose();
-          router.push(`/explore?q=${encodeURIComponent(query.trim())}`);
+          router.push(`/search?q=${encodeURIComponent(query.trim())}`);
         }
       }
     };
@@ -374,7 +374,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           <button
             onClick={() => {
               onClose();
-              router.push(query ? `/explore?q=${encodeURIComponent(query)}` : "/explore");
+              router.push(query ? `/search?q=${encodeURIComponent(query)}` : "/search");
             }}
             className="font-medium text-orange-600 dark:text-orange-400 hover:underline inline-flex items-center gap-1"
           >

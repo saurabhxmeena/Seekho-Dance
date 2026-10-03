@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Layers, User } from "lucide-react";
+import { Home, Search, GraduationCap, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function MobileNav() {
@@ -12,20 +12,36 @@ export function MobileNav() {
   const navTabs = [
     { name: "Home", href: "/", icon: Home },
     { name: "Search", href: "/search", icon: Search },
-    { name: "Style", href: "/styles", icon: Layers },
+    { name: "Courses", href: "/styles", icon: GraduationCap },
     { name: "Profile", href: "/profile", icon: User },
   ];
 
   // Active tab index for mathematically precise morphing glass lens (strictly 4 items)
   const getActiveIndex = () => {
     if (pathname === "/") return 0;
-    if (pathname.startsWith("/search")) return 1;
+    if (pathname.startsWith("/search") || (pathname.startsWith("/styles/") && pathname !== "/styles")) return 1;
     if (pathname.startsWith("/styles")) return 2;
     if (pathname.startsWith("/profile")) return 3;
     return -1;
   };
 
   const activeIndex = getActiveIndex();
+
+  // Track whether the lens has been shown at least once to avoid animating on mount
+  const isFirstRender = useRef(true);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      // Defer enabling animation until after first paint so the
+      // lens renders in the correct initial position instantly.
+      const id = requestAnimationFrame(() => {
+        setShouldAnimate(true);
+        isFirstRender.current = false;
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, []);
 
   return (
     <div className="sm:hidden fixed bottom-[calc(0.85rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-50 pointer-events-none flex justify-center px-4">
@@ -39,10 +55,17 @@ export function MobileNav() {
           {activeIndex >= 0 && (
             <div
               aria-hidden="true"
-              className="absolute inset-y-0 w-1/4 pointer-events-none transition-transform duration-280 ease-[cubic-bezier(0.25,1,0.35,1)] flex items-center justify-center p-0.5"
+              className="absolute inset-y-0 w-1/4 pointer-events-none flex items-center justify-center p-0.5"
               style={{
                 transform: `translateX(${activeIndex * 100}%)`,
                 left: 0,
+                // GPU-composited transition using transform only.
+                // On first render no transition so the lens snaps to the
+                // correct position without sliding in from the left.
+                transition: shouldAnimate
+                  ? "transform 280ms cubic-bezier(0.25, 1, 0.35, 1)"
+                  : "none",
+                willChange: "transform",
               }}
             >
               <div className="w-full h-full rounded-full liquid-glass-lens" />

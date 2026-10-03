@@ -41,7 +41,7 @@ export default function HomePage() {
           </div>
 
           <Link
-            href="/explore"
+            href="/search"
             className="text-xs font-semibold text-neutral-600 dark:text-[#9E9EA8] hover:text-orange-600 dark:hover:text-orange-400 inline-flex items-center gap-1 transition shrink-0 py-1"
           >
             <span>Explore all</span>
@@ -78,7 +78,7 @@ export default function HomePage() {
             </div>
 
             <Link
-              href="/explore?difficulty=Beginner"
+              href="/search?q=Beginner"
               className="text-xs font-semibold text-neutral-600 dark:text-[#9E9EA8] hover:text-orange-600 dark:hover:text-orange-400 inline-flex items-center gap-1 transition shrink-0 self-start sm:self-auto py-1"
             >
               <span>All Beginner</span>
@@ -117,7 +117,7 @@ export default function HomePage() {
             </div>
 
             <Link
-              href="/explore?style=Wedding"
+              href="/search?style=Wedding"
               className="text-xs font-semibold text-neutral-600 dark:text-[#9E9EA8] hover:text-orange-600 dark:hover:text-orange-400 inline-flex items-center gap-1 transition shrink-0 py-1"
             >
               <span>Explore all</span>
